@@ -16,7 +16,7 @@ module.exports = {
             }
         }
 
-		if (!hasDivider1) {
+				if (!hasDivider1) {
             return message.reply('You need to include a divider between the item name and bulkiness argument.');
         }
 
@@ -32,18 +32,18 @@ module.exports = {
             return message.reply('You need to include a bulkiness argument.');
         }
 
-		const bulkyArg = parseInt(args[dividerPos1 + 1]);
+				const bulkyArg = parseInt(args[dividerPos1 + 1]);
 
-		if (Number.isInteger(bulkyArg) == false) {
-            return message.reply('You need to include an integer bulkiness argument.');
-        }
+				if (Number.isInteger(bulkyArg) == false) {
+		            return message.reply('You need to include an integer bulkiness argument.');
+		        }
 
-		if (typeof args[dividerPos1 + 2] === 'undefined') {
-            return message.reply('You need to include an item description.');
-        }
+				if (typeof args[dividerPos1 + 2] === 'undefined') {
+		            return message.reply('You need to include an item description.');
+		        }
 
-		let descriptionArgs = '';
-		for (var i = dividerPos1 + 2; i < args.length; i++) {
+				let descriptionArgs = '';
+				for (var i = dividerPos1 + 2; i < args.length; i++) {
             if (i !== dividerPos1 + 2) {
                 descriptionArgs += ' ';
             }

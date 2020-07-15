@@ -64,15 +64,15 @@ module.exports = {
                     }
                     temp += nameArg;
                 }
-				try {
+								try {
 	                const affectedRows = await database[2].update({ items: temp }, { where: { name: containerArg, guild: message.guild.id.toString() } });
 	                //area.upsert(containers: temp);
 	                if (affectedRows > 0) {
 	                	return message.reply(`${numberArg} of item ${nameArg} assigned to container ${containerArg}.`);
 	                }
-				} catch (e) {
-					return message.reply(`Something went wrong with assigning an item. Error: ${e}`);
-				}
+								} catch (e) {
+									return message.reply(`Something went wrong with assigning an item. Error: ${e}`);
+								}
             }
 
         	return message.reply(`Something went wrong with assigning an item.`);

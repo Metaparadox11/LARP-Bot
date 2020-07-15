@@ -38,6 +38,12 @@ const Abilities = sequelize.define('abilities', {
 	},
 	description: Sequelize.TEXT,
 	effect: Sequelize.TEXT,
+	limited: {
+		type: Sequelize.BOOLEAN,
+		defaultValue: false,
+		allowNull: false,
+	},
+	cooldown: Sequelize.INTEGER,
   guild: Sequelize.STRING,
 });
 

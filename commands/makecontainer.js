@@ -62,10 +62,10 @@ module.exports = {
             areaArg += args[i];
         }
 
-		const areaTemp = await database[1].findOne({ where: { name: areaArg, guild: message.guild.id.toString() } });
-		if (!areaTemp) {
-			return message.reply('You must include a valid area.');
-		}
+				const areaTemp = await database[1].findOne({ where: { name: areaArg, guild: message.guild.id.toString() } });
+				if (!areaTemp) {
+					return message.reply('You must include a valid area.');
+				}
 
         //----------------
 
@@ -93,7 +93,7 @@ module.exports = {
 
         //----------------
 
-		const itemsArg = '';
+				const itemsArg = '';
 
         try {
         	const container = await database[2].create({

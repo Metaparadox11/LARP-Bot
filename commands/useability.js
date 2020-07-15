@@ -65,6 +65,16 @@ module.exports = {
                   messageTemp += ` by ${nameTemp} with effect: ${effectTemp}`;
                 }
 
+								if (ability.get('limited')) {
+									let privateMessage = `You used limited-use ability ${abilityTemp}.\n`;
+									message.author.send(privateMessage);
+								}
+
+								let cooldown = parseInt(ability.get('cooldown'));
+								if (cooldown > 0) {
+									setTimeout(cooldownMessage, 1000 * 60 * cooldown, message.author, abilityTemp);
+								}
+
                 return message.channel.send(messageTemp);
               }
             } catch (e) {
@@ -76,4 +86,9 @@ module.exports = {
     	return message.reply(`Something went wrong looking up that ability. Error: ${e}`);
     }
 	},
+
 };
+
+function cooldownMessage(author, abilityTemp) {
+	author.send(`The cooldown for your ability ${abilityTemp} is over.`);
+}

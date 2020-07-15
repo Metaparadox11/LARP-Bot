@@ -17,7 +17,7 @@ module.exports = {
         }
 
         const numberArg = parseInt(args[1]);
-		if (typeof numberArg !== 'number') {
+				if (typeof numberArg !== 'number') {
             return message.reply('Number argument must be a number.');
         }
 
