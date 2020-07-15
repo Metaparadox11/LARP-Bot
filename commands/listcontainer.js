@@ -5,7 +5,7 @@ module.exports = {
     usage: '<containername>',
     guildOnly: true,
     cooldown: 3,
-	async execute(client, message, args, Items, Areas, Containers, Inventories, Abilities) {
+	async execute(client, message, args, database) {
         let containerTemp = '';
         for (var i = 0; i < args.length; i++) {
             if (i !== 0) {
@@ -15,7 +15,7 @@ module.exports = {
         }
 
         try {
-            const container = await Containers.findOne({ where: { name: containerTemp, guild: message.guild.toString() } });
+            const container = await database[2].findOne({ where: { name: containerTemp, guild: message.guild.id.toString() } });
             if (!container) {
             	return message.reply('You must include a valid container.');
             } else {

@@ -5,7 +5,7 @@ module.exports = {
     usage: '<areaname>',
     guildOnly: true,
     cooldown: 3,
-	async execute(client, message, args, Items, Areas, Containers, Inventories, Abilities) {
+	async execute(client, message, args, database) {
         //const areaTemp = args[0];
 		let areaTemp = '';
         for (var i = 0; i < args.length; i++) {
@@ -16,7 +16,7 @@ module.exports = {
         }
 
         try {
-            const area = await Areas.findOne({ where: { name: areaTemp, guild: message.guild.toString() } });
+            const area = await database[1].findOne({ where: { name: areaTemp, guild: message.guild.id.toString() } });
             if (!area) {
             	return message.reply('You must include a valid area.');
             } else {

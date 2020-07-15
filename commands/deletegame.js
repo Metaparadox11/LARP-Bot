@@ -6,7 +6,7 @@ module.exports = {
     usage: '',
     guildOnly: true,
     cooldown: 3,
-	async execute(client, message, args, Items, Areas, Containers, Inventories, Abilities) {
+	async execute(client, message, args, database) {
         message.channel.send("Are you sure? [y/n]");
         const collector = new Discord.MessageCollector(message.channel, m => m.author.id === message.author.id, { time: 10000 });
         collector.on('collect', async message => {
@@ -15,35 +15,35 @@ module.exports = {
             } else if (message.content == 'n') {
                 return message.reply('Okay. Deletion canceled.');
             } else {
-                return message.reply('Try command ?deletegame again. Response to the question must be \'y\' or \'n\n');
+                return message.reply('Try command ?deletegame again. Response to the question must be \'y\' or \'n\'\n');
             }
 
             try {
-                const container = await Containers.destroy({ where: { guild: message.guild.toString() } });
+                const container = await database[2].destroy({ where: { guild: message.guild.id.toString() } });
                 try {
-                	const ability = await Abilities.destroy({ where: { guild: message.guild.toString() } });
+                	const ability = await database[4].destroy({ where: { guild: message.guild.id.toString() } });
                     try {
-                    	const item = await Items.destroy({ where: { guild: message.guild.toString() } });
+                    	const item = await database[0].destroy({ where: { guild: message.guild.id.toString() } });
                         try {
-                        	const area = await Areas.destroy({ where: { guild: message.guild.toString() } });
+                        	const area = await database[1].destroy({ where: { guild: message.guild.id.toString() } });
                             try {
-                            	const inventory = await Inventories.destroy({ where: { guild: message.guild.toString() } });
+                            	const inventory = await database[3].destroy({ where: { guild: message.guild.id.toString() } });
                             } catch (error) {
-                            	message.reply('There was an error trying to delete inventories!');
+                            	return message.reply('There was an error trying to delete inventories!');
                             }
                         } catch (error) {
-                        	message.reply('There was an error trying to delete areas!');
+                        	return message.reply('There was an error trying to delete areas!');
                         }
                     } catch (error) {
-                    	message.reply('There was an error trying to delete items!');
+                    	return message.reply('There was an error trying to delete items!');
                     }
                 } catch (error) {
-                	message.reply('There was an error trying to delete abilities!');
+                	return message.reply('There was an error trying to delete abilities!');
                 }
             } catch (error) {
-            	message.reply('There was an error trying to delete containers!');
+            	return message.reply('There was an error trying to delete containers!');
             }
-            message.reply('Deleted all game assets.');
+            return message.reply('Deleted all game assets.');
         });
 	},
 };

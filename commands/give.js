@@ -5,7 +5,7 @@ module.exports = {
     usage: '<user> <number> <item>',
     guildOnly: false,
     cooldown: 3,
-	execute(message, args) {
+	execute(client, message, args, database) {
         if (!message.mentions.users.size) {
 	       return message.reply('You need to tag a user in order to give them something!');
         }

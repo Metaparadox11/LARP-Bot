@@ -5,7 +5,7 @@ module.exports = {
     usage: '<itemname>',
     guildOnly: true,
     cooldown: 3,
-	async execute(client, message, args, Items, Areas, Containers, Inventories, Abilities) {
+	async execute(client, message, args, database) {
         let itemTemp = '';
         for (var i = 0; i < args.length; i++) {
             if (i !== 0) {
@@ -15,7 +15,7 @@ module.exports = {
         }
 
         try {
-            const item = await Items.findOne({ where: { name: itemTemp, guild: message.guild.toString() } });
+            const item = await database[0].findOne({ where: { name: itemTemp, guild: message.guild.id.toString() } });
             if (!item) {
             	return message.reply('You must include a valid item.');
             } else {

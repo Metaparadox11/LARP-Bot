@@ -5,11 +5,11 @@ module.exports = {
     usage: '',
     guildOnly: true,
     cooldown: 3,
-	async execute(client, message, args, Items, Areas, Containers, Inventories, Abilities) {
+	async execute(client, message, args, database) {
 		let channelTemp = message.channel;
 
         try {
-            const area = await Areas.findAll({ where: { channel: channelTemp.name, guild: message.guild.toString() } });
+            const area = await database[1].findAll({ where: { channel: channelTemp.name, guild: message.guild.id.toString() } });
             if (!area) {
             	return message.reply('There are no areas associated with this channel.');
             } else {

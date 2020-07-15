@@ -5,10 +5,10 @@ module.exports = {
     usage: '',
     guildOnly: true,
     cooldown: 3,
-	async execute(client, message, args, Items, Areas, Containers, Inventories, Abilities) {
+	async execute(client, message, args, database) {
 
         try {
-            const inventory = await Inventories.findAll({ where: { guild: message.guild.toString() } });
+            const inventory = await database[3].findAll({ where: { guild: message.guild.id.toString() } });
             if (!inventory) {
             	return message.reply('No inventories found.');
             } else {

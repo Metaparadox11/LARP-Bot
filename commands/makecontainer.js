@@ -5,7 +5,7 @@ module.exports = {
     usage: '<name> . <area> . <time> <random true/false>',
     guildOnly: true,
     cooldown: 3,
-	async execute(client, message, args, Items, Areas, Containers, Inventories, Abilities) {
+	async execute(client, message, args, database) {
         if (typeof args[0] === 'undefined') {
             return message.reply('You need to include a container name.');
         }
@@ -62,7 +62,7 @@ module.exports = {
             areaArg += args[i];
         }
 
-		const areaTemp = await Areas.findOne({ where: { name: areaArg, guild: message.guild.toString() } });
+		const areaTemp = await database[1].findOne({ where: { name: areaArg, guild: message.guild.id.toString() } });
 		if (!areaTemp) {
 			return message.reply('You must include a valid area.');
 		}
@@ -96,18 +96,18 @@ module.exports = {
 		const itemsArg = '';
 
         try {
-        	const container = await Containers.create({
+        	const container = await database[2].create({
         				name: nameArg,
 								items: itemsArg,
                 time: timeArg,
                 random: randomArg,
                 area: areaArg,
-                guild: message.guild.toString(),
+                guild: message.guild.id.toString(),
         	});
 
             // check areaArg to see if it exists in Areas
 
-            const area = await Areas.findOne({ where: { name: areaArg, guild: message.guild.toString() } });
+            const area = await database[1].findOne({ where: { name: areaArg, guild: message.guild.id.toString() } });
             if (!area) {
             	//return message.channel.send(area.get('name'));
                 return message.reply('You must include a valid area.');
@@ -120,7 +120,7 @@ module.exports = {
                 temp += nameArg;
                 let temp2 = area.get('name');
                 //return message.reply(`Setting containers of area ${temp2} to ${temp}`);
-                const affectedRows = await Areas.update({ containers: temp }, { where: { name: areaArg, guild: message.guild.toString() } });
+                const affectedRows = await database[1].update({ containers: temp }, { where: { name: areaArg, guild: message.guild.id.toString() } });
                 //area.upsert(containers: temp);
                 if (affectedRows > 0) {
                 	return message.reply(`Container created with name ${container.name} in area ${container.area}. Area ${areaArg} was edited.`);

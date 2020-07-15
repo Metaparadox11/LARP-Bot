@@ -5,15 +5,15 @@ module.exports = {
     usage: '',
     guildOnly: true,
     cooldown: 3,
-	async execute(client, message, args, Items, Areas, Containers, Inventories, Abilities) {
+	async execute(client, message, args, database) {
 
         try {
-            const ability = await Abilities.destroy({ where: { guild: message.guild.toString() } });
+            const ability = await database[4].destroy({ where: { guild: message.guild.id.toString() } });
             if (!ability) return message.reply('No abilities found.');
 
             try {
                 const temp = '';
-                const affectedRows = await Inventories.update({ abilities: temp }, { where: { guild: message.guild.toString() } });
+                const affectedRows = await database[3].update({ abilities: temp }, { where: { guild: message.guild.id.toString() } });
             } catch (e) {
                 return message.reply(`Something went wrong with updating an inventory. Error: ${e}`);
             }

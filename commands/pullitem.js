@@ -5,7 +5,7 @@ module.exports = {
     usage: '<number> <itemname> . <containername>',
     guildOnly: true,
     cooldown: 3,
-	async execute(client, message, args, Items, Areas, Containers, Inventories, Abilities) {
+	async execute(client, message, args, database) {
         const numberArg = parseInt(args[0]);
 		if (typeof numberArg !== 'number') {
             return message.reply('Number argument must be a number > 0.');
@@ -50,7 +50,7 @@ module.exports = {
         }
 
         try {
-        	const container = await Containers.findOne({ where: { name: containerArg, guild: message.guild.toString() } });
+        	const container = await database[2].findOne({ where: { name: containerArg, guild: message.guild.id.toString() } });
             if (!container) {
             	return message.reply('You must name a valid container.');
             } else {
@@ -84,7 +84,7 @@ module.exports = {
                 }
 
                 try {
-                    const affectedRows = await Containers.update({ items: temp }, { where: { name: containerArg, guild: message.guild.toString() } });
+                    const affectedRows = await database[2].update({ items: temp }, { where: { name: containerArg, guild: message.guild.id.toString() } });
 
                     if (affectedRows > 0) {
                     	return message.reply(`${countDeleted} of item ${nameArg} removed from container ${containerArg}.`);

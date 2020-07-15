@@ -5,7 +5,7 @@ module.exports = {
     usage: '<name> . <description> . <effect>',
     guildOnly: true,
     cooldown: 3,
-	async execute(client, message, args, Items, Areas, Containers, Inventories, Abilities) {
+	async execute(client, message, args, database) {
         let hasDivider1 = false;
         let dividerPos1 = 0;
         for (var i = 0; i < args.length; i++) {
@@ -71,11 +71,11 @@ module.exports = {
         }
 
         try {
-        	const ability = await Abilities.create({
+        	const ability = await database[4].create({
         		name: nameArg,
         		description: descriptionArgs,
         		effect: effectArgs,
-				guild: message.guild.toString(),
+						guild: message.guild.id.toString(),
         	});
         	return message.reply(`Ability ${ability.name} added.`);
         }

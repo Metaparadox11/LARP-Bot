@@ -5,7 +5,7 @@ module.exports = {
     usage: '<@username> <name>',
     guildOnly: true,
     cooldown: 3,
-	async execute(client, message, args, Items, Areas, Containers, Inventories, Abilities) {
+	async execute(client, message, args, database) {
         if (!message.mentions.users.size) {
 	       return message.reply('You need to tag a user in order to make their inventory!');
         }
@@ -29,12 +29,12 @@ module.exports = {
         const abilitiesArg = '';
 
         try {
-        	const inventory = await Inventories.create({
+        	const inventory = await database[3].create({
         		id: idArg,
                 items: itemsArg,
                 abilities: abilitiesArg,
                 name: nameArg,
-                guild: message.guild.toString(),
+                guild: message.guild.id.toString(),
         	});
         	return message.reply(`Inventory created for ${inventory.name}.`);
         }

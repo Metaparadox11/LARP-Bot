@@ -5,7 +5,7 @@ module.exports = {
     usage: '<abilityname>',
     guildOnly: true,
     cooldown: 3,
-	async execute(client, message, args, Items, Areas, Containers, Inventories, Abilities) {
+	async execute(client, message, args, database) {
         let nameArg = '';
         for (var i = 0; i < args.length; i++) {
             if (i !== 0) {
@@ -15,12 +15,12 @@ module.exports = {
         }
 
         try {
-            const ability = await Abilities.destroy({ where: { name: nameArg, guild: message.guild.toString() } });
+            const ability = await database[4].destroy({ where: { name: nameArg, guild: message.guild.id.toString() } });
             if (!ability) {
             	return message.reply('You must include a valid ability name.');
             } else {
                 try {
-                    const inventory = await Inventories.findAll({ where: { guild: message.guild.toString() } });
+                    const inventory = await database[3].findAll({ where: { guild: message.guild.id.toString() } });
 
                     if (inventory.length > 0) {
                         for (let i = 0; i < inventory.length; i++) {
@@ -46,7 +46,7 @@ module.exports = {
 
                             try {
 
-                                const affectedRows = await Inventories.update({ abilities: temp }, { where: { id: tempID, guild: message.guild.toString() } });
+                                const affectedRows = await database[3].update({ abilities: temp }, { where: { id: tempID, guild: message.guild.id.toString() } });
 
                                 if (affectedRows > 0) {
                                     //return message.reply(`Container ${nameArg} deleted. Area edited to remove container.`);

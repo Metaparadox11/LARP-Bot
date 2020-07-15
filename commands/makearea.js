@@ -5,7 +5,7 @@ module.exports = {
     usage: '<channel> <name>',
     guildOnly: true,
     cooldown: 3,
-	async execute(client, message, args, Items, Areas, Containers, Inventories, Abilities) {
+	async execute(client, message, args, database) {
         if (!message.guild.channels.cache.find(channel => channel.name === args[0])) {
             return message.reply('You need to include a valid channel name.');
         }
@@ -26,11 +26,11 @@ module.exports = {
         const containersArg = '';
 
         try {
-        	const area = await Areas.create({
+        	const area = await database[1].create({
                 name: nameArg,
                 channel: channelArg,
                 containers: containersArg,
-				guild: message.guild.toString(),
+								guild: message.guild.id.toString(),
         	});
         	return message.reply(`Area ${area.name} added.`);
         }

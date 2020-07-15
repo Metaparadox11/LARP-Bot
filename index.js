@@ -34,32 +34,32 @@ const Items = sequelize.define('items', {
 const Abilities = sequelize.define('abilities', {
 	name: {
 		type: Sequelize.STRING,
-			unique: true,
-		},
-		description: Sequelize.TEXT,
-		effect: Sequelize.TEXT,
-    guild: Sequelize.STRING,
+		unique: true,
+	},
+	description: Sequelize.TEXT,
+	effect: Sequelize.TEXT,
+  guild: Sequelize.STRING,
 });
 
 const Inventories = sequelize.define('inventories', {
-    id: {
+  id: {
 		type: Sequelize.STRING,
-			primaryKey: true,
-		},
-		items: Sequelize.STRING,
-		abilities: Sequelize.STRING,
-    name: Sequelize.TEXT,
-    guild: Sequelize.STRING,
+		primaryKey: true,
+	},
+	items: Sequelize.STRING,
+	abilities: Sequelize.STRING,
+  name: Sequelize.TEXT,
+  guild: Sequelize.STRING,
 });
 
 const Areas = sequelize.define('areas', {
-    name: {
+  name: {
 		type: Sequelize.STRING,
 		unique: true,
 	},
-    channel: Sequelize.STRING,
+  channel: Sequelize.STRING,
 	containers: Sequelize.STRING,
-    guild: Sequelize.STRING,
+  guild: Sequelize.STRING,
 });
 
 const Containers = sequelize.define('containers', {
@@ -74,8 +74,8 @@ const Containers = sequelize.define('containers', {
 		defaultValue: false,
 		allowNull: false,
 	},
-    area: Sequelize.STRING,
-    guild: Sequelize.STRING,
+  area: Sequelize.STRING,
+  guild: Sequelize.STRING,
 });
 
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
@@ -92,11 +92,11 @@ const cooldowns = new Discord.Collection();
 
 client.once('ready', () => {
 	console.log('Ready!');
-    Items.sync();
-    Areas.sync();
-    Containers.sync();
-    Inventories.sync();
-    Abilities.sync();
+  Items.sync();
+  Areas.sync();
+  Containers.sync();
+  Inventories.sync();
+  Abilities.sync();
 });
 
 client.on('message', async message => {
@@ -143,8 +143,10 @@ client.on('message', async message => {
     timestamps.set(message.author.id, now);
     setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
 
+		let database = [Items, Areas, Containers, Inventories, Abilities];
+
     try {
-    	command.execute(client, message, args, Items, Areas, Containers, Inventories, Abilities);
+    	command.execute(client, message, args, database);
     } catch (error) {
     	console.error(error);
     	message.reply('There was an error trying to execute that command!');

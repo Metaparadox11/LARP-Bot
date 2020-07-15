@@ -5,14 +5,14 @@ module.exports = {
     usage: '',
     guildOnly: true,
     cooldown: 3,
-	async execute(client, message, args, Items, Areas, Containers, Inventories, Abilities) {
+	async execute(client, message, args, database) {
 
         try {
-            const area = await Areas.destroy({ where: { guild: message.guild.toString() } });
+            const area = await database[1].destroy({ where: { guild: message.guild.id.toString() } });
             if (!area) return message.reply('No areas found.');
 
             try {
-                const container = await Containers.destroy({ where: { guild: message.guild.toString() } });
+                const container = await database[2].destroy({ where: { guild: message.guild.id.toString() } });
             }
             catch (e) {
             	return message.reply(`Something went wrong deleting containers. Error: ${e}`);

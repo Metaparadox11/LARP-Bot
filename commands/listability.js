@@ -5,7 +5,7 @@ module.exports = {
     usage: '<abilityname>',
     guildOnly: true,
     cooldown: 3,
-	async execute(client, message, args, Items, Areas, Containers, Inventories, Abilities) {
+	async execute(client, message, args, database) {
         //const areaTemp = args[0];
 		let abilityTemp = '';
         for (var i = 0; i < args.length; i++) {
@@ -16,7 +16,7 @@ module.exports = {
         }
 
         try {
-            const ability = await Abilities.findOne({ where: { name: abilityTemp, guild: message.guild.toString() } });
+            const ability = await database[4].findOne({ where: { name: abilityTemp, guild: message.guild.id.toString() } });
             if (!ability) {
             	return message.reply('You must include a valid ability.');
             } else {

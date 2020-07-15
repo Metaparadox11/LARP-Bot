@@ -5,7 +5,7 @@ module.exports = {
     usage: '<containername>',
     guildOnly: true,
     cooldown: 3,
-	async execute(client, message, args, Items, Areas, Containers, Inventories, Abilities) {
+	async execute(client, message, args, database) {
         let nameArg = '';
         for (var i = 0; i < args.length; i++) {
             if (i !== 0) {
@@ -15,20 +15,20 @@ module.exports = {
         }
 
         try {
-            const container = await Containers.findOne({ where: { name: nameArg, guild: message.guild.toString() } });
+            const container = await database[2].findOne({ where: { name: nameArg, guild: message.guild.id.toString() } });
             if (!container) {
             	return message.reply('You must include a valid container name.');
             }
             let tempArea = container.get('area');
 
             try {
-                const container2 = await Containers.destroy({ where: { name: nameArg, guild: message.guild.toString() } });
+                const container2 = await database[2].destroy({ where: { name: nameArg, guild: message.guild.id.toString() } });
                 if (!container2) {
                 	return message.reply('You must include a valid container name.');
                 } else {
 
                     try {
-                        const area = await Areas.findOne({ where: { name: tempArea, guild: message.guild.toString() } });
+                        const area = await database[1].findOne({ where: { name: tempArea, guild: message.guild.id.toString() } });
 
                         let tempContainers = area.get('containers');
 
@@ -51,7 +51,7 @@ module.exports = {
 
                         try {
 
-                            const affectedRows = await Areas.update({ containers: temp }, { where: { name: tempArea, guild: message.guild.toString() } });
+                            const affectedRows = await database[1].update({ containers: temp }, { where: { name: tempArea, guild: message.guild.id.toString() } });
 
                             if (affectedRows > 0) {
                             	return message.reply(`Container ${nameArg} deleted. Area edited to remove container.`);

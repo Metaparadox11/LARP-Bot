@@ -5,7 +5,7 @@ module.exports = {
   usage: '<@user (optional)> <abilityname>',
   guildOnly: true,
   cooldown: 3,
-	async execute(client, message, args, Items, Areas, Containers, Inventories, Abilities) {
+	async execute(client, message, args, database) {
     let x = 1;
     if (!message.mentions.users.size) {
       x = 0;
@@ -31,12 +31,12 @@ module.exports = {
     }
 
     try {
-        const ability = await Abilities.findOne({ where: { name: nameArg, guild: message.guild.toString() } });
+        const ability = await database[4].findOne({ where: { name: nameArg, guild: message.guild.id.toString() } });
         if (!ability) {
         	 return message.reply('You must include a valid ability.');
         } else {
             try {
-              const inventory = await Inventories.findOne({ where: { id: message.author.id.toString(), guild: message.guild.toString() } });
+              const inventory = await database[3].findOne({ where: { id: message.author.id.toString(), guild: message.guild.id.toString() } });
               if (!inventory) {
                 return message.reply('You must have an inventory.');
               } else {

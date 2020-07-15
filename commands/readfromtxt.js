@@ -5,7 +5,7 @@ module.exports = {
   usage: '',
   guildOnly: true,
   cooldown: 3,
-	async execute(client, message, args, Items, Areas, Containers, Inventories, Abilities) {
+	async execute(client, message, args, database) {
 
         try {
           const fs = require('fs');
@@ -22,7 +22,7 @@ module.exports = {
                     for (let i = 0; i < commands.length; i++) {
                       commands[i] = commands[i].slice(1, commands[i].length);
                       message.channel.send(commands[i]);
-                      
+
                       const args = commands[i].split(/ +/);
                       const commandName = args.shift().toLowerCase();
 
@@ -45,7 +45,7 @@ module.exports = {
                       }
 
                       try {
-                      	command.execute(client, message, args, Items, Areas, Containers, Inventories, Abilities);
+                      	command.execute(client, message, args, database);
                       } catch (error) {
                       	console.error(error);
                       	message.reply('There was an error trying to execute a command!');

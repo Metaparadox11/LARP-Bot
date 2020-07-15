@@ -5,7 +5,7 @@ module.exports = {
     usage: '<@user> <number> <itemname>',
     guildOnly: true,
     cooldown: 3,
-	async execute(client, message, args, Items, Areas, Containers, Inventories, Abilities) {
+	async execute(client, message, args, database) {
         if (!message.mentions.users.size) {
 	       return message.reply('You need to tag a user in order to delete items!');
         }
@@ -38,7 +38,7 @@ module.exports = {
         }
 
 		try {
-        	const inventory = await Inventories.findOne({ where: { id: idArg, guild: message.guild.toString() } });
+        	const inventory = await database[3].findOne({ where: { id: idArg, guild: message.guild.id.toString() } });
             if (!inventory) {
             	return message.reply('You must tag a valid username.');
             } else {
@@ -71,7 +71,7 @@ module.exports = {
                 }
 
                 try {
-                    const affectedRows = await Inventories.update({ items: temp }, { where: { id: idArg, guild: message.guild.toString() } });
+                    const affectedRows = await database[3].update({ items: temp }, { where: { id: idArg, guild: message.guild.id.toString() } });
 
                     if (affectedRows > 0) {
                     	return message.reply(`${countDeleted} of item ${nameArg} deleted from <@${inventory.get('id')}>'s inventory.`);
