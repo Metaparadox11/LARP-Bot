@@ -47,42 +47,26 @@ module.exports = {
 								// Delete items from your inventory
 								let items = itemTempYours.split(/,/);
 
-                let temp = '';
-								let deleted = false;
+								let temp = '';
 								let pos = -1;
-                for (let i = 0; i < items.length; i++) {
-                    if (i !== 0 && i < items.length - 1) {
-											if (items[i] !== itemTemp) {
-												temp += ',' + items[i];
-											} else {
-												if (!deleted) {
-													deleted = true;
-													pos = i;
-												} else {
-													temp += items[i];
-												}
-											}
-										} else {
-											if (items[i] !== itemTemp) {
-												temp += items[i];
-											} else {
-												if (!deleted) {
-													deleted = true;
-													pos = i;
-												} else {
-													if (pos !== 0) {
-														temp += ',' + items[i];
-													} else {
-														temp += items[i];
-													}
-												}
-											}
+	              for (let i = 0; i < items.length; i++) {
+	                  if (items[i] === itemTemp) {
+											pos = i;
+											i = items.length;
 										}
-                }
-
-								if (!deleted) {
+	              }
+								if (pos === -1) {
 									return message.reply(`You don't have item ${itemTemp}.`);
 								}
+								items.splice(pos, 1);
+								for (let i = 0; i < items.length; i++) {
+									temp += items[i];
+									if (i !== items.length - 1) {
+										temp += ',';
+									}
+								}
+
+
 
                 try {
                     const affectedRows = await database[3].update({ items: temp }, { where: { id: message.author.id.toString(), guild: message.guild.id.toString() } });

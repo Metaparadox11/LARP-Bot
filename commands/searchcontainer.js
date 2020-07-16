@@ -92,36 +92,19 @@ module.exports = {
 
 							// Remove item from container
 							temp = '';
-							let deleted = false;
 							let pos = -1;
 							for (let i = 0; i < items.length; i++) {
-									if (i !== 0 && i < items.length - 1) {
-										if (items[i] !== randomItem) {
-											temp += ',' + items[i];
-										} else {
-											if (!deleted) {
-												deleted = true;
-												pos = i;
-											} else {
-												temp += items[i];
-											}
-										}
-									} else {
-										if (items[i] !== randomItem) {
-											temp += items[i];
-										} else {
-											if (!deleted) {
-												deleted = true;
-												pos = i;
-											} else {
-												if (pos !== 0) {
-													temp += ',' + items[i];
-												} else {
-													temp += items[i];
-												}
-											}
-										}
+									if (items[i] === randomItem) {
+										pos = i;
+										i = items.length;
 									}
+							}
+							items.splice(pos, 1);
+							for (let i = 0; i < items.length; i++) {
+								temp += items[i];
+								if (i !== items.length - 1) {
+									temp += ',';
+								}
 							}
 
 							try {
@@ -173,6 +156,55 @@ module.exports = {
 										mainMessages[mainMessages.length] = await message.reply(`You chose item ${items[i]}.`);
 
 										// Actually move item from container into your inventory
+										// Add item to inventory
+										try {
+											const inventory = await database[3].findOne({ where: { id: message.author.id.toString(), guild: message.guild.id.toString() } });
+											let yourItems = inventory.get('items');
+											let temp = '';
+											if (yourItems === '') {
+												temp = items[i];
+											} else {
+												temp = yourItems + ',' + items[i];
+											}
+
+											try {
+												const affectedRows = await database[3].update({ items: temp }, { where: { id: message.author.id.toString(), guild: message.guild.id.toString() } });
+
+												if (affectedRows === 0) {
+													return message.reply(`Something went wrong with updating your inventory.`);
+												}
+											} catch (e) {
+												return message.reply(`Something went wrong with updating your inventory. Error: ${e}`);
+											}
+										} catch (e) {
+											return message.reply(`Something went wrong with checking for your inventory. Error: ${e}`);
+										}
+
+										// Remove item from container
+										let temp = '';
+										for (let a = 0; a < items.length; a++) {
+												if (a !== 0) {
+													if (a !== i) {
+														temp += ',' + items[a];
+													}
+												} else {
+													if (a !== i) {
+														temp += items[a];
+													}
+												}
+										}
+
+										try {
+												const affectedRows = await database[2].update({ items: temp }, { where: { name: containerTemp, guild: message.guild.id.toString() } });
+
+												if (affectedRows === 0) {
+													return message.reply(`Something went wrong removing the item from the container.`);
+												}
+										} catch (e) {
+												return message.reply(`Something went wrong removing the item from the container. Error: ${e}`);
+										}
+
+										mainMessages[mainMessages.length] = await message.reply(`You got item ${items[i]}.`);
 
 									} else {
 										mainMessages[mainMessages.length] = await message.reply(`You didn't pick an item.`);
