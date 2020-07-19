@@ -20,7 +20,7 @@ module.exports = {
                     if (typeof itemsTemp === 'undefined') itemsTemp = 'none';
                     let abilitiesTemp = inventory[i].get('abilities');
                     if (typeof abilitiesTemp === 'undefined') abilitiesTemp = 'none';
-                    messageTemp += `\nUser: <@${idTemp}>\nCharacter Name: ${nameTemp}\nItems: ${itemsTemp}\nAbilities: ${abilitiesTemp}\n`;
+                    messageTemp += `\nCharacter Name: ${nameTemp}\nItems: ${itemsTemp}\nAbilities: ${abilitiesTemp}\n`;
                 }
 				if (inventory.length === 0) {
 					messageTemp = 'No inventories found.';

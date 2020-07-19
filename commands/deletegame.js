@@ -28,6 +28,11 @@ module.exports = {
                         	const area = await database[1].destroy({ where: { guild: message.guild.id.toString() } });
                             try {
                             	const inventory = await database[3].destroy({ where: { guild: message.guild.id.toString() } });
+															try {
+	                            	const roles = await database[5].destroy({ where: { guild: message.guild.id.toString() } });
+	                            } catch (error) {
+	                            	return message.reply('There was an error trying to delete roles!');
+	                            }
                             } catch (error) {
                             	return message.reply('There was an error trying to delete inventories!');
                             }

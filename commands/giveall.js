@@ -9,19 +9,65 @@ module.exports = {
       if (!message.mentions.users.size) {
        return message.reply('You need to tag a user in order to give them something!');
       }
-      const taggedUser = message.mentions.users.first();
+
+			let roleId = '';
+			try {
+					const roles = await database[5].findAll({ where: { guild: message.guild.id.toString() } });
+					if (!roles) {
+						return message.reply('No roles found.');
+					} else {
+						let tempId = '';
+						for (let i = 0; i < roles.length; i++) {
+							tempId = roles[i].get('id');
+							let char = message.mentions.members.first();
+							if (char.roles.cache.has(tempId)) {
+								roleId = tempId;
+								i = roles.length;
+							}
+						}
+					}
+			}
+			catch (e) {
+				return message.reply(`Something went wrong looking up roles. Error: ${e}`);
+			}
+
+			const taggedUser = await message.guild.roles.fetch(roleId);
+			let idArg = taggedUser.id.toString();
 
       if (taggedUser === message.author) {
         return message.reply(`You can't give your items to yourself.`);
       }
 
+			let roleId2 = '';
+			try {
+					const roles = await database[5].findAll({ where: { guild: message.guild.id.toString() } });
+					if (!roles) {
+						return message.reply('No roles found.');
+					} else {
+						let tempId = '';
+						for (let i = 0; i < roles.length; i++) {
+							tempId = roles[i].get('id');
+							let author = message.member;
+							if (author.roles.cache.has(tempId)) {
+								roleId2 = tempId;
+								i = roles.length;
+							}
+						}
+					}
+			}
+			catch (e) {
+				return message.reply(`Something went wrong looking up roles. Error: ${e}`);
+			}
+
+			const you = await message.guild.roles.fetch(roleId2);
+
       try {
-          const yourInventory = await database[3].findOne({ where: { id: message.author.id.toString(), guild: message.guild.id.toString() } });
+          const yourInventory = await database[3].findOne({ where: { id: you.id.toString(), guild: message.guild.id.toString() } });
           if (!yourInventory) {
             return message.reply('You must include a valid inventory.');
           } else {
               let itemsTempYours = yourInventory.get('items');
-              if (typeof itemsTempYours === 'undefined') {
+              if (typeof itemsTempYours === 'undefined' || itemsTempYours === '') {
                 return message.reply(`You don't have any items to give.`);
               }
 

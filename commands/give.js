@@ -9,7 +9,29 @@ module.exports = {
         if (!message.mentions.users.size) {
 	       return message.reply('You need to tag a user in order to give them something!');
         }
-        const taggedUser = message.mentions.users.first();
+
+				let roleId = '';
+				try {
+						const roles = await database[5].findAll({ where: { guild: message.guild.id.toString() } });
+						if (!roles) {
+							return message.reply('No roles found.');
+						} else {
+							let tempId = '';
+							for (let i = 0; i < roles.length; i++) {
+								tempId = roles[i].get('id');
+								let char = message.mentions.members.first();
+								if (char.roles.cache.has(tempId)) {
+									roleId = tempId;
+									i = roles.length;
+								}
+							}
+						}
+				}
+				catch (e) {
+					return message.reply(`Something went wrong looking up roles. Error: ${e}`);
+				}
+
+				const taggedUser = await message.guild.roles.fetch(roleId);
 				let idArg = taggedUser.id.toString();
 
         if (typeof args[1] === 'undefined') {
@@ -34,13 +56,36 @@ module.exports = {
 					return message.reply(`Something went wrong looking up that item. Error: ${e}`);
 				}
 
+				let roleId2 = '';
 				try {
-	          const yourInventory = await database[3].findOne({ where: { id: message.author.id.toString(), guild: message.guild.id.toString() } });
+            const roles = await database[5].findAll({ where: { guild: message.guild.id.toString() } });
+            if (!roles) {
+            	return message.reply('No roles found.');
+            } else {
+							let tempId = '';
+							for (let i = 0; i < roles.length; i++) {
+								tempId = roles[i].get('id');
+								let author = message.member;
+								if (author.roles.cache.has(tempId)) {
+									roleId2 = tempId;
+									i = roles.length;
+								}
+							}
+            }
+        }
+        catch (e) {
+        	return message.reply(`Something went wrong looking up roles. Error: ${e}`);
+        }
+
+				const you = await message.guild.roles.fetch(roleId2);
+
+				try {
+	          const yourInventory = await database[3].findOne({ where: { id: you.id.toString(), guild: message.guild.id.toString() } });
 	          if (!yourInventory) {
 	            return message.reply('You must have an inventory.');
 	          } else {
 	              let itemTempYours = yourInventory.get('items');
-	              if (typeof itemTempYours === 'undefined') {
+	              if (typeof itemTempYours === 'undefined' || itemTempYours === '') {
 	                return message.reply(`You don't have any items to give.`);
 	              }
 
@@ -69,7 +114,7 @@ module.exports = {
 
 
                 try {
-                    const affectedRows = await database[3].update({ items: temp }, { where: { id: message.author.id.toString(), guild: message.guild.id.toString() } });
+                    const affectedRows = await database[3].update({ items: temp }, { where: { id: you.id.toString(), guild: message.guild.id.toString() } });
 
                     if (affectedRows === 0) {
                     	return message.reply(`Something went wrong removing the item from your inventory.`);
@@ -113,7 +158,7 @@ module.exports = {
 	        return message.reply(`Something went wrong looking up that inventory. Error: ${e}`);
 	      }
 
-	      message.reply(`You gave ${taggedUser} ${itemTemp}.`);
+	      message.reply(`You gave ${itemTemp} to ${taggedUser}.`);
 
         //let item = '';
         //if (amount <= 1) {

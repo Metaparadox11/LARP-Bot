@@ -84,6 +84,15 @@ const Containers = sequelize.define('containers', {
   guild: Sequelize.STRING,
 });
 
+const Roles = sequelize.define('roles', {
+	id: Sequelize.STRING,
+	name: {
+		type: Sequelize.STRING,
+		unique: true,
+	},
+  guild: Sequelize.STRING,
+});
+
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
@@ -103,6 +112,7 @@ client.once('ready', () => {
   Containers.sync();
   Inventories.sync();
   Abilities.sync();
+	Roles.sync();
 });
 
 client.on('message', async message => {
@@ -149,7 +159,7 @@ client.on('message', async message => {
     timestamps.set(message.author.id, now);
     setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
 
-		let database = [Items, Areas, Containers, Inventories, Abilities];
+		let database = [Items, Areas, Containers, Inventories, Abilities, Roles];
 
     try {
     	command.execute(client, message, args, database);

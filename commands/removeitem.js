@@ -1,90 +1,141 @@
 module.exports = {
 	name: 'removeitem',
-	description: 'Remove an item or items from an inventory.',
+	description: 'Remove an item from an inventory.',
     args: true,
-    usage: '<@user> <number> <itemname>',
+    usage: '<character name or role> . <itemname>',
     guildOnly: true,
     cooldown: 3,
 	async execute(client, message, args, database) {
-        if (!message.mentions.users.size) {
-	       return message.reply('You need to tag a user in order to delete items!');
-        }
-        const taggedUser = message.mentions.users.first();
-        let idArg = taggedUser.id.toString();
+		async function removeItem(idArg, nameArg) {
+			try {
+				const inventory = await database[3].findOne({ where: { id: idArg, guild: message.guild.id.toString() } });
+					if (!inventory) {
+						return message.reply('You must tag a valid username.');
+					} else {
+							let tempItems = inventory.get('items');
 
-        if (typeof args[1] === 'undefined') {
-            return message.reply('You need to include a number.');
-        }
+							if (typeof tempItems === 'undefined') tempItems = '';
 
-        const numberArg = parseInt(args[1]);
-				if (typeof numberArg !== 'number') {
-            return message.reply('Number argument must be a number.');
-        }
+							let items = tempItems.split(/,/);
 
-        if (numberArg <= 0) {
-            return message.reply('Number argument must be a number > 0.');
-        }
+							let temp = '';
+							let pos = -1;
+							for (let i = 0; i < items.length; i++) {
+									if (items[i] === nameArg) {
+										pos = i;
+										i = items.length;
+									}
+							}
+							if (pos === -1) {
+								return message.reply(`You don't have item ${nameArg}.`);
+							}
+							items.splice(pos, 1);
+							for (let i = 0; i < items.length; i++) {
+								temp += items[i];
+								if (i !== items.length - 1) {
+									temp += ',';
+								}
+							}
 
-        if (typeof args[2] === 'undefined') {
-            return message.reply('You need to include an item name.');
-        }
+							try {
+									const affectedRows = await database[3].update({ items: temp }, { where: { id: idArg, guild: message.guild.id.toString() } });
 
-        let nameArg = '';
-        for (var i = 2; i < args.length; i++) {
-            if (i !== 2) {
-                nameArg += ' ';
-            }
-            nameArg += args[i];
-        }
+									if (affectedRows > 0) {
+										return message.reply(`One of item ${nameArg} deleted from ${inventory.get('name')}'s inventory.`);
+									}
+							} catch (e) {
+									return message.reply(`Something went wrong with deleting an item from an inventory. Error: ${e}`);
+							}
+					}
 
-		try {
-        	const inventory = await database[3].findOne({ where: { id: idArg, guild: message.guild.id.toString() } });
-            if (!inventory) {
-            	return message.reply('You must tag a valid username.');
-            } else {
-                let tempItems = inventory.get('items');
+				return message.reply(`Something went wrong with assigning an item.`);
+			}
+			catch (e) {
+				return message.reply(`Something went wrong with assigning an item. Error: ${e}`);
+			}
+		}
 
-                if (typeof tempItems === 'undefined') tempItems = '';
+		let dividerPos1 = 0;
+		if (!message.mentions.roles.size) {
+			 //get dividerPos1
+			 let hasDivider1 = false;
+			 for (var i = 0; i < args.length; i++) {
+					 if (args[i] === '.') {
+							 hasDivider1 = true;
+							 dividerPos1 = i;
+							 i = args.length;
+					 }
+			 }
 
-                let items = tempItems.split(/,/);
+			if (!hasDivider1) {
+					 return message.reply('You need to include a divider between the ability name and description.');
+			 }
 
-                let temp = '';
-                let a = 0;
-                let maxA = numberArg - 1;
-                let countDeleted = 0;
-                for (var i = 0; i < items.length; i++) {
-                    if (i !== a && items[i] !== nameArg) {
-                        temp += ',';
-                        temp += items[i];
-                    } else if (i === a && items[i] !== nameArg) {
-                        temp += items[i];
-                    } else if (i === a && items[i] === nameArg) {
-                        if (a < maxA) {
-                            a += 1;
-                            countDeleted += 1;
-                        } else {
-                            temp += items[i];
-                        }
-                    } else if (i !== a && items[i] === nameArg) {
-                        countDeleted += 1;
-                    }
-                }
+			 // Get character name
+			 let nameArg = '';
+			 for (var i = 0; i < dividerPos1; i++) {
+					 if (i !== 0) {
+							 nameArg += ' ';
+					 }
+					 nameArg += args[i];
+			 }
 
-                try {
-                    const affectedRows = await database[3].update({ items: temp }, { where: { id: idArg, guild: message.guild.id.toString() } });
+			 //Get item name and number
 
-                    if (affectedRows > 0) {
-                    	return message.reply(`${countDeleted} of item ${nameArg} deleted from <@${inventory.get('id')}>'s inventory.`);
-                    }
-                } catch (e) {
-                    return message.reply(`Something went wrong with deleting an item from an inventory. Error: ${e}`);
-                }
-            }
+			 if (typeof args[dividerPos1 + 1] === 'undefined') {
+					 return message.reply('You need to include a number of items.');
+			 }
 
-        	return message.reply(`Something went wrong with assigning an item.`);
-        }
-        catch (e) {
-        	return message.reply(`Something went wrong with assigning an item. Error: ${e}`);
-        }
+			 if (typeof args[dividerPos1 + 1] === 'undefined') {
+           return message.reply('You need to include an item name.');
+       }
+
+			 let itemArg = '';
+			 for (var i = dividerPos1 + 1; i < args.length; i++) {
+					 if (i !== dividerPos1 + 1) {
+							 itemArg += ' ';
+					 }
+					 itemArg += args[i];
+			 }
+
+			 //Get role from name
+			 try {
+				 const role = await database[5].findOne({ where: { name: nameArg, guild: message.guild.id.toString() } });
+				 if (!role) {
+					 return message.reply(`You need to include a valid character name or tag a character role in order to delete their item!`);
+				 } else {
+					 let tempId = role.get('id');
+					 let taggedRole = await message.guild.roles.fetch(tempId);
+					 const idArg = taggedRole.id.toString();
+
+					 removeItem(idArg, itemArg);
+				 }
+			 } catch (e) {
+				return message.reply(`You need to include a valid character name or tag a character role in order to delete their item! Error: ${e}`);
+			 }
+		} else {
+			 dividerPos1 = 1;
+			 const taggedUser = message.mentions.roles.first();
+			 let idArg = taggedUser.id.toString();
+
+			 if (typeof args[dividerPos1] !== '.') {
+					 return message.reply('You need to include a divider between the character name and item name.');
+			 }
+
+			 if (typeof args[dividerPos1 + 1] === 'undefined') {
+					 return message.reply('You need to include an item name.');
+			 }
+
+			 let nameArg = '';
+			 for (var i = dividerPos1 + 1; i < args.length; i++) {
+					 if (i !== 1) {
+							 nameArg += ' ';
+					 }
+					 nameArg += args[i];
+			 }
+
+			 removeItem(idArg, nameArg);
+		}
+
 	},
 };

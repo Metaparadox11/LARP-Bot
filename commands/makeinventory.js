@@ -2,47 +2,68 @@ module.exports = {
 	name: 'makeinventory',
 	description: 'Make an inventory and add it to the database.',
     args: true,
-    usage: '<@username> <name>',
+    usage: '<character role or name>',
     guildOnly: true,
     cooldown: 3,
 	async execute(client, message, args, database) {
-        if (!message.mentions.users.size) {
-	       return message.reply('You need to tag a user in order to make their inventory!');
-        }
-        const taggedUser = message.mentions.users.first();
+				async function makeInventory(idArg, itemsArg, abilitiesArg, nameArg) {
+					try {
+						const inventory = await database[3].create({
+							id: idArg,
+							items: itemsArg,
+							abilities: abilitiesArg,
+							name: nameArg,
+							guild: message.guild.id.toString(),
+						});
+						return message.reply(`Inventory created for ${inventory.name}.`);
+					}
+					catch (e) {
+						if (e.name === 'SequelizeUniqueConstraintError') {
+							return message.reply('That inventory already exists.');
+						}
+						return message.reply(`Something went wrong with adding an inventory. Error: ${e}`);
+					}
+				}
 
-        if (typeof args[1] === 'undefined') {
-            return message.reply('You need to include a character name.');
-        }
+				if (!message.mentions.roles.size) {
+		       //return message.reply('You need to tag a character role in order to make their inventory!');
+					 let temp = args[0];
+					 for (let i = 1; i < args.length; i++) {
+						 temp += ' ' + args[i];
+					 }
 
-        let nameArg = '';
-        for (var i = 1; i < args.length; i++) {
-            if (i !== 1) {
-                nameArg += ' ';
-            }
-            nameArg += args[i];
-        }
+					 //Get role from name
+					 try {
+						 	const role = await database[5].findOne({ where: { name: temp, guild: message.guild.id.toString() } });
+	            if (!role) {
+								return message.reply(`You need to include a valid character name or tag a character role in order to make their inventory!`);
+						 	} else {
+								let tempId = role.get('id');
+								let taggedRole = await message.guild.roles.fetch(tempId);
 
-        const idArg = taggedUser.id.toString();
-        //return message.reply(idArg);
-        const itemsArg = '';
-        const abilitiesArg = '';
+								let nameArg = taggedRole.name;
 
-        try {
-        	const inventory = await database[3].create({
-        		id: idArg,
-                items: itemsArg,
-                abilities: abilitiesArg,
-                name: nameArg,
-                guild: message.guild.id.toString(),
-        	});
-        	return message.reply(`Inventory created for ${inventory.name}.`);
-        }
-        catch (e) {
-        	if (e.name === 'SequelizeUniqueConstraintError') {
-        		return message.reply('That inventory already exists.');
-        	}
-        	return message.reply(`Something went wrong with adding an inventory. Error: ${e}`);
-        }
+				        const idArg = taggedRole.id.toString();
+				        //return message.reply(idArg);
+				        const itemsArg = '';
+				        const abilitiesArg = '';
+
+				        makeInventory(idArg, itemsArg, abilitiesArg, nameArg);
+							}
+					 } catch (e) {
+						 return message.reply(`You need to include a valid character name or tag a character role in order to make their inventory! Error: ${e}`);
+					 }
+				} else {
+					let taggedRole = message.mentions.roles.first();
+
+					let nameArg = taggedRole.name;
+
+	        const idArg = taggedRole.id.toString();
+	        //return message.reply(idArg);
+	        const itemsArg = '';
+	        const abilitiesArg = '';
+
+	        makeInventory(idArg, itemsArg, abilitiesArg, nameArg);
+				}
 	},
 };

@@ -66,6 +66,11 @@ module.exports = {
                 let maxA = numberArg - 1;
                 let countDeleted = 0;
                 for (var i = 0; i < items.length; i++) {
+									if (items.length === 1) {
+										temp = '';
+										countDeleted = 1;
+										i = items.length;
+									} else {
                     if (i !== a && items[i] !== nameArg) {
                         temp += ',';
                         temp += items[i];
@@ -81,6 +86,7 @@ module.exports = {
                     } else if (i !== a && items[i] === nameArg) {
                         countDeleted += 1;
                     }
+									}
                 }
 
                 try {

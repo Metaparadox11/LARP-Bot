@@ -7,7 +7,29 @@ module.exports = {
     guildOnly: true,
     cooldown: 3,
 	async execute(client, message, args, database) {
-        const taggedUser = message.author;
+				let roleId = '';
+				try {
+            const roles = await database[5].findAll({ where: { guild: message.guild.id.toString() } });
+            if (!roles) {
+            	return message.reply('No roles found.');
+            } else {
+							let tempId = '';
+							for (let i = 0; i < roles.length; i++) {
+								tempId = roles[i].get('id');
+								let author = message.member;
+								if (author.roles.cache.has(tempId)) {
+									roleId = tempId;
+									i = roles.length;
+								}
+							}
+							if (roleId === '') return message.reply(`You don't have a role.`);
+            }
+        }
+        catch (e) {
+        	return message.reply(`Something went wrong looking up roles. Error: ${e}`);
+        }
+
+				const taggedUser = await message.guild.roles.fetch(roleId);
 
         try {
             const inventory = await database[3].findOne({ where: { id: taggedUser.id.toString(), guild: message.guild.id.toString() } });

@@ -47,8 +47,31 @@ module.exports = {
 				return message.reply(`Something went wrong looking up that item. Error: ${e}`);
 			}
 
+			//Get associated character role
+			let roleId = '';
 			try {
-          const yourInventory = await database[3].findOne({ where: { id: message.author.id.toString(), guild: message.guild.id.toString() } });
+					const roles = await database[5].findAll({ where: { guild: message.guild.id.toString() } });
+					if (!roles) {
+						return message.reply('No roles found.');
+					} else {
+						for (let i = 0; i < roles.length; i++) {
+							tempId = roles[i].get('id');
+							let author = message.member;
+							if (author.roles.cache.has(tempId)) {
+								roleId = tempId;
+								i = roles.length;
+							}
+						}
+					}
+			}
+			catch (e) {
+				return message.reply(`Something went wrong looking up roles. Error: ${e}`);
+			}
+
+			const taggedUser = await message.guild.roles.fetch(roleId);
+
+			try {
+          const yourInventory = await database[3].findOne({ where: { id: taggedUser.id.toString(), guild: message.guild.id.toString() } });
           if (!yourInventory) {
             return message.reply('You must have an inventory.');
           } else {

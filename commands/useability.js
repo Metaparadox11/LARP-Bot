@@ -7,11 +7,34 @@ module.exports = {
   cooldown: 3,
 	async execute(client, message, args, database) {
     let x = 1;
-    if (!message.mentions.users.size) {
+    if (!message.mentions.members.size) {
       x = 0;
     }
 
-    const taggedUser = message.mentions.users.first();
+		let roleId = '';
+		if (x === 1) {
+			try {
+					const roles = await database[5].findAll({ where: { guild: message.guild.id.toString() } });
+					if (!roles) {
+						return message.reply('No roles found.');
+					} else {
+						let tempId = '';
+						for (let i = 0; i < roles.length; i++) {
+							tempId = roles[i].get('id');
+							let char = message.mentions.members.first();
+							if (char.roles.cache.has(tempId)) {
+								roleId = tempId;
+								i = roles.length;
+							}
+						}
+					}
+			}
+			catch (e) {
+				return message.reply(`Something went wrong looking up roles. Error: ${e}`);
+			}
+		}
+
+		const taggedUser = await message.guild.roles.fetch(roleId);
 
     if (typeof args[x] === 'undefined') {
         return message.reply('You need to include an ability name.');
@@ -26,17 +49,43 @@ module.exports = {
     }
 
     let idArg = '';
-    if (typeof taggedUser !== 'undefined') {
-      idArg = taggedUser.id.toString();
-    }
+
+		if (x === 1) {
+			idArg = taggedUser.id.toString();
+		}
 
     try {
         const ability = await database[4].findOne({ where: { name: nameArg, guild: message.guild.id.toString() } });
         if (!ability) {
         	 return message.reply('You must include a valid ability.');
         } else {
+
+						let roleId2 = '';
+						try {
+								const roles = await database[5].findAll({ where: { guild: message.guild.id.toString() } });
+								if (!roles) {
+									return message.reply('No roles found.');
+								} else {
+									let tempId = '';
+									for (let i = 0; i < roles.length; i++) {
+										tempId = roles[i].get('id');
+										let author = message.member;
+										if (author.roles.cache.has(tempId)) {
+											roleId2 = tempId;
+											i = roles.length;
+										}
+									}
+								}
+						}
+						catch (e) {
+							return message.reply(`Something went wrong looking up roles. Error: ${e}`);
+						}
+
+						const you = await message.guild.roles.fetch(roleId2);
+
+
             try {
-              const inventory = await database[3].findOne({ where: { id: message.author.id.toString(), guild: message.guild.id.toString() } });
+              const inventory = await database[3].findOne({ where: { id: you.id.toString(), guild: message.guild.id.toString() } });
               if (!inventory) {
                 return message.reply('You must have an inventory.');
               } else {
@@ -60,7 +109,7 @@ module.exports = {
                 let messageTemp = `\nAbility ${abilityTemp} used`;
 
                 if (idArg !== '') {
-                  messageTemp += ` on <@${idArg}> by ${nameTemp} with effect: ${effectTemp}`;
+                  messageTemp += ` on ${taggedUser} by ${nameTemp} with effect: ${effectTemp}`;
                 } else {
                   messageTemp += ` by ${nameTemp} with effect: ${effectTemp}`;
                 }

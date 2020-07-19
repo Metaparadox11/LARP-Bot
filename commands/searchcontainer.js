@@ -29,6 +29,22 @@ module.exports = {
           if (!container) {
             return message.reply(`That container doesn't exist.`);
           } else {
+						// Check if you're in the right channel
+						let thisChannel = message.channel.name;
+						let containerArea = container.get('area');
+						try {
+							const area = await database[1].findOne({ where: { name: containerArea, guild: message.guild.id.toString() } });
+							if (!area) {
+								return message.reply(`No area contains this container.`);
+							}
+							let areaChannel = area.get('channel');
+							if (areaChannel !== thisChannel) {
+								return message.reply(`You aren't in the right area to search that container.`);
+							}
+						} catch (e) {
+							return message.reply(`Something went wrong with getting the area's channel. Error: ${e}`);
+						}
+
 						// React filter
 						const filter = (reaction, user) => {
 							return reaction.emoji.name === '✅' && user.id === message.author.id;
