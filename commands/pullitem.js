@@ -6,8 +6,12 @@ module.exports = {
     guildOnly: true,
     cooldown: 3,
 	async execute(client, message, args, database) {
-        const numberArg = parseInt(args[0]);
-		if (typeof numberArg !== 'number') {
+				if (!message.member.roles.cache.some(role => role.name === 'GM') && !message.member.roles.cache.some(role => role.name === 'Head GM')) {
+					return message.reply(`You don't have GM permissions.`);
+				}
+
+				const numberArg = parseInt(args[0]);
+				if (typeof numberArg !== 'number') {
             return message.reply('Number argument must be a number > 0.');
         }
 

@@ -6,6 +6,9 @@ module.exports = {
     guildOnly: true,
     cooldown: 3,
 	async execute(client, message, args, database) {
+				if (!message.member.roles.cache.some(role => role.name === 'GM') && !message.member.roles.cache.some(role => role.name === 'Head GM')) {
+					return message.reply(`You don't have GM permissions.`);
+				}
 
         try {
             const item = await database[0].findAll({ where: { guild: message.guild.id.toString() } });

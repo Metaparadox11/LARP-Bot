@@ -85,7 +85,10 @@ const Containers = sequelize.define('containers', {
 });
 
 const Roles = sequelize.define('roles', {
-	id: Sequelize.STRING,
+	id: {
+		type: Sequelize.STRING,
+		primaryKey: true,
+	},
 	name: {
 		type: Sequelize.STRING,
 		unique: true,

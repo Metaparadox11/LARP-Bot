@@ -6,7 +6,11 @@ module.exports = {
     guildOnly: true,
     cooldown: 3,
 	async execute(client, message, args, database) {
-        if (typeof args[0] === 'undefined') {
+				if (!message.member.roles.cache.some(role => role.name === 'GM') && !message.member.roles.cache.some(role => role.name === 'Head GM')) {
+					return message.reply(`You don't have GM permissions.`);
+				}
+
+				if (typeof args[0] === 'undefined') {
             return message.reply('You need to include a container name.');
         }
 

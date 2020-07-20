@@ -7,7 +7,11 @@ module.exports = {
     cooldown: 3,
 	async execute(client, message, args, database) {
 
-        try {
+				if (!message.member.roles.cache.some(role => role.name === 'GM') && !message.member.roles.cache.some(role => role.name === 'Head GM')) {
+					return message.reply(`You don't have GM permissions.`);
+				}
+
+				try {
             const item = await database[0].destroy({ where: { guild: message.guild.id.toString() } });
             if (!item) return message.reply('No items found.');
 

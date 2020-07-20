@@ -6,6 +6,10 @@ module.exports = {
     guildOnly: true,
     cooldown: 3,
 	async execute(client, message, args, database) {
+				if (!message.member.roles.cache.some(role => role.name === 'GM') && !message.member.roles.cache.some(role => role.name === 'Head GM')) {
+					return message.reply(`You don't have GM permissions.`);
+				}
+
 				async function assignAbility(idArg, nameArg) {
 					//Check ability is in database
 					try {

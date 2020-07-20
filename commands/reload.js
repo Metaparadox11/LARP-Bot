@@ -2,7 +2,11 @@ module.exports = {
 	name: 'reload',
 	description: 'Reloads a command',
 	execute(client, message, args, database) {
-        const commandName = args[0].toLowerCase();
+				if (!message.member.roles.cache.some(role => role.name === 'GM') && !message.member.roles.cache.some(role => role.name === 'Head GM')) {
+					return message.reply(`You don't have GM permissions.`);
+				}
+
+				const commandName = args[0].toLowerCase();
         const command = message.client.commands.get(commandName)
         	|| message.client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 

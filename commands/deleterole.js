@@ -6,7 +6,11 @@ module.exports = {
   guildOnly: true,
   cooldown: 3,
 	async execute(client, message, args, database) {
-    if (!message.mentions.roles.size) {
+		if (!message.member.roles.cache.some(role => role.name === 'GM') && !message.member.roles.cache.some(role => role.name === 'Head GM')) {
+			return message.reply(`You don't have GM permissions.`);
+		}
+
+		if (!message.mentions.roles.size) {
       let name = args[0];
       for (let i = 1; i < args.length; i++) {
         name += ' ' + args[i];

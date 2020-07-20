@@ -6,7 +6,11 @@ module.exports = {
     guildOnly: true,
     cooldown: 3,
 	async execute(client, message, args, database) {
-        if (!message.guild.channels.cache.find(channel => channel.name === args[0])) {
+				if (!message.member.roles.cache.some(role => role.name === 'GM') && !message.member.roles.cache.some(role => role.name === 'Head GM')) {
+					return message.reply(`You don't have GM permissions.`);
+				}
+
+				if (!message.guild.channels.cache.find(channel => channel.name === args[0])) {
             return message.reply('You need to include a valid channel name.');
         }
 

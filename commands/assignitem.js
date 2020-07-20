@@ -6,6 +6,10 @@ module.exports = {
     guildOnly: true,
     cooldown: 3,
 	async execute(client, message, args, database) {
+		if (!message.member.roles.cache.some(role => role.name === 'GM') && !message.member.roles.cache.some(role => role.name === 'Head GM')) {
+			return message.reply(`You don't have GM permissions.`);
+		}
+
 		async function assignItem(idArg, numberArg, nameArg) {
 			//Check item is in database
 			try {
@@ -36,7 +40,7 @@ module.exports = {
 										temp += ',' + nameArg;
 									}
               }
-							
+
 							const affectedRows = await database[3].update({ items: temp }, { where: { id: idArg, guild: message.guild.id.toString() } });
 
 							if (affectedRows > 0) {

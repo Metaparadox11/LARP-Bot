@@ -7,7 +7,11 @@ module.exports = {
     guildOnly: true,
     cooldown: 3,
 	async execute(client, message, args, database) {
-        message.channel.send("Are you sure? [y/n]");
+				if (!message.member.roles.cache.some(role => role.name === 'GM') && !message.member.roles.cache.some(role => role.name === 'Head GM')) {
+					return message.reply(`You don't have GM permissions.`);
+				}
+
+				message.channel.send("Are you sure? [y/n]");
         const collector = new Discord.MessageCollector(message.channel, m => m.author.id === message.author.id, { time: 10000 });
         collector.on('collect', async message => {
             if (message.content == 'y') {

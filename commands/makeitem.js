@@ -6,7 +6,11 @@ module.exports = {
     guildOnly: true,
     cooldown: 3,
 	async execute(client, message, args, database) {
-        let hasDivider1 = false;
+				if (!message.member.roles.cache.some(role => role.name === 'GM') && !message.member.roles.cache.some(role => role.name === 'Head GM')) {
+					return message.reply(`You don't have GM permissions.`);
+				}
+
+				let hasDivider1 = false;
         let dividerPos1 = 0;
         for (var i = 0; i < args.length; i++) {
             if (args[i] === '.') {
