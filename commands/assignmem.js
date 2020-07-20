@@ -1,8 +1,8 @@
 module.exports = {
-	name: 'assignability',
-	description: 'Assign an ability to an inventory.',
+	name: 'assignmem',
+	description: 'Assign a memory packet to an inventory.',
   args: true,
-  usage: '<character name or role> . <abilityname>',
+  usage: '<character name or role> . <mem name>',
   guildOnly: true,
   cooldown: 3,
 	async execute(client, message, args, database) {
@@ -10,15 +10,15 @@ module.exports = {
 					return message.reply(`You don't have GM permissions.`);
 				}
 
-				async function assignAbility(idArg, nameArg) {
-					//Check ability is in database
+				async function assignMem(idArg, nameArg) {
+					//Check mem is in database
 					try {
-						const ability = await database[4].findOne({ where: { name: nameArg, guild: message.guild.id.toString() } });
-						if (!ability) {
-							return message.reply(`That ability doesn't exist.`);
+						const mem = await database[6].findOne({ where: { name: nameArg, guild: message.guild.id.toString() } });
+						if (!mem) {
+							return message.reply(`That memory packet doesn't exist.`);
 						}
 					} catch (e) {
-						return message.reply(`Something went wrong with checking an ability. Error: ${e}`);
+						return message.reply(`Something went wrong with checking a memory packet. Error: ${e}`);
 					}
 
 					try {
@@ -26,18 +26,18 @@ module.exports = {
 	            if (!inventory) {
 	                return message.reply('You must include a valid character name or role.');
 	            } else {
-									let temp = inventory.get('abilities');
+									let temp = inventory.get('mems');
 
-									let abilities = temp.split(/,/);
-									let abilityPresent = false;
-									for (let i = 0; i < abilities.length; i++) {
-										if (abilities[i] === nameArg) {
-											abilityPresent = true;
+									let memz = temp.split(/,/);
+									let memPresent = false;
+									for (let i = 0; i < memz.length; i++) {
+										if (memz[i] === nameArg) {
+											memPresent = true;
 										}
 									}
 
-									if (abilityPresent) {
-										return message.reply('That character already has that ability.');
+									if (memPresent) {
+										return message.reply('That character already has that memory packet.');
 									}
 
 	                if (typeof temp === 'undefined') temp = '';
@@ -45,23 +45,23 @@ module.exports = {
 	                    temp += ','
 	                }
 	                temp += nameArg;
-	                const affectedRows = await database[3].update({ abilities: temp }, { where: { id: idArg, guild: message.guild.id.toString() } });
-	                //area.upsert(containers: temp);
+	                const affectedRows = await database[3].update({ mems: temp }, { where: { id: idArg, guild: message.guild.id.toString() } });
+
 	                if (affectedRows > 0) {
-	                	return message.reply(`Ability ${nameArg} assigned to ${inventory.get('name')}'s inventory.`);
+	                	return message.reply(`Memory packet ${nameArg} assigned to ${inventory.get('name')}'s inventory.`);
 	                }
 	            }
 
-	        	return message.reply(`Something went wrong with assigning an ability.`);
+	        	return message.reply(`Something went wrong with assigning a memory packet.`);
 	        }
 	        catch (e) {
-	        	return message.reply(`Something went wrong with assigning an ability. Error: ${e}`);
+	        	return message.reply(`Something went wrong with assigning a memory packet. Error: ${e}`);
 	        }
 				}
 
 				let dividerPos1 = 0;
 			 	if (!message.mentions.roles.size) {
-		       //return message.reply('You need to include a role in order to assign an ability!');
+		       //return message.reply('You need to include a role in order to assign an mem!');
 					 //get dividerPos1
 					 let hasDivider1 = false;
 	         for (var i = 0; i < args.length; i++) {
@@ -73,7 +73,7 @@ module.exports = {
 	         }
 
 	 				if (!hasDivider1) {
-	             return message.reply('You need to include a divider between the character name or role and ability name.');
+	             return message.reply('You need to include a divider between the character name or role and memory packet name.');
 	         }
 
 	         let nameArg = '';
@@ -84,45 +84,45 @@ module.exports = {
 	             nameArg += args[i];
 	         }
 
-					//Get ability name
+					//Get mem name
 
 	         if (typeof args[dividerPos1 + 1] === 'undefined') {
-	             return message.reply('You need to include an ability name.');
+	             return message.reply('You need to include a memory packet name.');
 	         }
 
-					 let abilityArg = '';
+					 let memArg = '';
 	         for (var i = dividerPos1 + 1; i < args.length; i++) {
 	             if (i !== dividerPos1 + 1) {
-	                 abilityArg += ' ';
+	                 memArg += ' ';
 	             }
-	             abilityArg += args[i];
+	             memArg += args[i];
 	         }
 
 					 //Get role from name
 		 			 try {
 		 			 	 const role = await database[5].findOne({ where: { name: nameArg, guild: message.guild.id.toString() } });
 		 			 	 if (!role) {
-		 			 		 return message.reply(`You need to include a valid character name or tag a character role in order to assign them an ability!`);
+		 			 		 return message.reply(`You need to include a valid character name or tag a character role in order to assign them a memory packet!`);
 		 				 } else {
 		 					 let tempId = role.get('id');
 		 					 let taggedRole = await message.guild.roles.fetch(tempId);
 							 const idArg = taggedRole.id.toString();
 
-		 					 assignAbility(idArg, abilityArg);
+		 					 assignMem(idArg, memArg);
 		 				 }
 		 			 } catch (e) {
-		 				return message.reply(`You need to include a valid character name or tag a character role in order to assign them an ability! Error: ${e}`);
+		 				return message.reply(`You need to include a valid character name or tag a character role in order to assign them a memory packet! Error: ${e}`);
 		 			 }
 			 	} else {
 					 dividerPos1 = 1;
 					 const taggedUser = message.mentions.roles.first();
 
 					 if (typeof args[dividerPos1] !== '.') {
-		           return message.reply('You need to include a divider between the character role or name and ability name.');
+		           return message.reply('You need to include a divider between the character role or name and memory packet name.');
 		       }
 
 					 if (typeof args[dividerPos1 + 1] === 'undefined') {
-		           return message.reply('You need to include an ability name.');
+		           return message.reply('You need to include a memory packet name.');
 		       }
 
 					 let idArg = taggedUser.id.toString();
@@ -135,7 +135,7 @@ module.exports = {
 		           nameArg += args[i];
 		       }
 
-					 assignAbility(idArg, nameArg);
+					 assignMem(idArg, nameArg);
 			 	}
 	},
 };

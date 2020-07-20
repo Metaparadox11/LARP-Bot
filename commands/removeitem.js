@@ -123,7 +123,7 @@ module.exports = {
 			 let idArg = taggedUser.id.toString();
 
 			 if (typeof args[dividerPos1] !== '.') {
-					 return message.reply('You need to include a divider between the character name and item name.');
+					 return message.reply('You need to include a divider between the character role or name and item name.');
 			 }
 
 			 if (typeof args[dividerPos1 + 1] === 'undefined') {

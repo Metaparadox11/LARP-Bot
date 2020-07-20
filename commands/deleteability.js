@@ -1,10 +1,10 @@
 module.exports = {
 	name: 'deleteability',
 	description: 'Deletes an ability and all instances of that ability from the game.',
-    args: true,
-    usage: '<abilityname>',
-    guildOnly: true,
-    cooldown: 3,
+  args: true,
+  usage: '<abilityname>',
+  guildOnly: true,
+  cooldown: 3,
 	async execute(client, message, args, database) {
 				if (!message.member.roles.cache.some(role => role.name === 'GM') && !message.member.roles.cache.some(role => role.name === 'Head GM')) {
 					return message.reply(`You don't have GM permissions.`);

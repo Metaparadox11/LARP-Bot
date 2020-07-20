@@ -21,7 +21,9 @@ module.exports = {
 	                if (typeof itemsTemp === 'undefined') itemsTemp = 'none';
 	                let abilitiesTemp = inventory.get('abilities');
 	                if (typeof abilitiesTemp === 'undefined') abilitiesTemp = 'none';
-	                return message.reply(`\nCharacter Name: ${nameTemp}\nItems: ${itemsTemp}\nAbilities: ${abilitiesTemp}`);
+									let memsTemp = inventory.get('mems');
+	                if (typeof memsTemp === 'undefined') memsTemp = 'none';
+	                return message.reply(`\nCharacter Name: ${nameTemp}\nItems: ${itemsTemp}\nAbilities: ${abilitiesTemp}\nMemory Packets: ${memsTemp}`);
 	            }
 	        }
 	        catch (e) {

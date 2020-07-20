@@ -10,12 +10,13 @@ module.exports = {
 					return message.reply(`You don't have GM permissions.`);
 				}
 
-				async function makeInventory(idArg, itemsArg, abilitiesArg, nameArg) {
+				async function makeInventory(idArg, itemsArg, abilitiesArg, memsArg, nameArg) {
 					try {
 						const inventory = await database[3].create({
 							id: idArg,
 							items: itemsArg,
 							abilities: abilitiesArg,
+							mems: memsArg,
 							name: nameArg,
 							guild: message.guild.id.toString(),
 						});
@@ -51,8 +52,9 @@ module.exports = {
 				        //return message.reply(idArg);
 				        const itemsArg = '';
 				        const abilitiesArg = '';
+								const memsArg = '';
 
-				        makeInventory(idArg, itemsArg, abilitiesArg, nameArg);
+				        makeInventory(idArg, itemsArg, abilitiesArg, memsArg, nameArg);
 							}
 					 } catch (e) {
 						 return message.reply(`You need to include a valid character name or tag a character role in order to make their inventory! Error: ${e}`);
@@ -66,8 +68,9 @@ module.exports = {
 	        //return message.reply(idArg);
 	        const itemsArg = '';
 	        const abilitiesArg = '';
+					const memsArg = '';
 
-	        makeInventory(idArg, itemsArg, abilitiesArg, nameArg);
+	        makeInventory(idArg, itemsArg, abilitiesArg, memsArg, nameArg);
 				}
 	},
 };

@@ -41,8 +41,10 @@ module.exports = {
                 if (typeof itemsTemp === 'undefined') itemsTemp = 'none';
                 let abilitiesTemp = inventory.get('abilities');
                 if (typeof abilitiesTemp === 'undefined') abilitiesTemp = 'none';
+								let memsTemp = inventory.get('mems');
+                if (typeof memsTemp === 'undefined') memsTemp = 'none';
 
-                const message1 = await message.channel.send(`Character Name: ${nameTemp}\nItems: ${itemsTemp}\nAbilities: ${abilitiesTemp}`);
+                const message1 = await message.channel.send(`Character Name: ${nameTemp}\nItems: ${itemsTemp}\nAbilities: ${abilitiesTemp}\nMemory Packets: ${memsTemp}`);
 
                 const message2 = await message.channel.send("Delete message? React 👌 to delete.");
                 message2.react('👌');

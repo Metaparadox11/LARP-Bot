@@ -1,6 +1,6 @@
 module.exports = {
-	name: 'deleteabilities',
-	description: 'Deletes all abilities from game and from inventories.',
+	name: 'deletemems',
+	description: 'Deletes all memory packets from game and from inventories.',
   args: false,
   usage: '',
   guildOnly: true,
@@ -12,20 +12,20 @@ module.exports = {
 				}
 
 				try {
-            const ability = await database[4].destroy({ where: { guild: message.guild.id.toString() } });
-            if (!ability) return message.reply('No abilities found.');
+            const mems = await database[6].destroy({ where: { guild: message.guild.id.toString() } });
+            if (!mems) return message.reply('No memory packets found.');
 
             try {
                 const temp = '';
-                const affectedRows = await database[3].update({ abilities: temp }, { where: { guild: message.guild.id.toString() } });
+                const affectedRows = await database[3].update({ mems: temp }, { where: { guild: message.guild.id.toString() } });
             } catch (e) {
                 return message.reply(`Something went wrong with updating an inventory. Error: ${e}`);
             }
 
-            return message.reply(`Deleted all abilities.`);
+            return message.reply(`Deleted all memory packets.`);
         }
         catch (e) {
-        	return message.reply(`Something went wrong deleting abilities. Error: ${e}`);
+        	return message.reply(`Something went wrong deleting memory packets. Error: ${e}`);
         }
 	},
 };

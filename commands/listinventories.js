@@ -24,7 +24,9 @@ module.exports = {
                     if (typeof itemsTemp === 'undefined') itemsTemp = 'none';
                     let abilitiesTemp = inventory[i].get('abilities');
                     if (typeof abilitiesTemp === 'undefined') abilitiesTemp = 'none';
-                    messageTemp += `\nCharacter Name: ${nameTemp}\nItems: ${itemsTemp}\nAbilities: ${abilitiesTemp}\n`;
+										let memsTemp = inventory.get('mems');
+		                if (typeof memsTemp === 'undefined') memsTemp = 'none';
+                    messageTemp += `\nCharacter Name: ${nameTemp}\nItems: ${itemsTemp}\nAbilities: ${abilitiesTemp}\nMemory Packets: ${memsTemp}\n`;
                 }
 				if (inventory.length === 0) {
 					messageTemp = 'No inventories found.';

@@ -1,10 +1,10 @@
 module.exports = {
 	name: 'listability',
 	description: 'List an ability\'s data.',
-    args: true,
-    usage: '<abilityname>',
-    guildOnly: true,
-    cooldown: 3,
+  args: true,
+  usage: '<abilityname>',
+  guildOnly: true,
+  cooldown: 3,
 	async execute(client, message, args, database) {
         //const areaTemp = args[0];
 				if (!message.member.roles.cache.some(role => role.name === 'GM') && !message.member.roles.cache.some(role => role.name === 'Head GM')) {
