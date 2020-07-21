@@ -1,10 +1,10 @@
 module.exports = {
 	name: 'listitem',
 	description: 'List an item\'s data.',
-    args: true,
-    usage: '<itemname>',
-    guildOnly: true,
-    cooldown: 3,
+  args: true,
+  usage: '<itemname>',
+  guildOnly: true,
+  cooldown: 3,
 	async execute(client, message, args, database) {
         let itemTemp = '';
         for (var i = 0; i < args.length; i++) {

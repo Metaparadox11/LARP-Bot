@@ -46,11 +46,11 @@ module.exports = {
 
                 const message1 = await message.channel.send(`Character Name: ${nameTemp}\nItems: ${itemsTemp}\nAbilities: ${abilitiesTemp}\nMemory Packets: ${memsTemp}`);
 
-                const message2 = await message.channel.send("Delete message? React 👌 to delete.");
-                message2.react('👌');
+                const message2 = await message.channel.send("Delete message? React ✅ to delete.");
+                message2.react('✅');
 
                 const filter = (reaction, user) => {
-                	return reaction.emoji.name === '👌' && user.id === message.author.id;
+                	return reaction.emoji.name === '✅' && user.id === message.author.id;
                 };
 
                 const collector = message2.createReactionCollector(filter, { time: 100000 });
