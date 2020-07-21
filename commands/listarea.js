@@ -27,7 +27,9 @@ module.exports = {
                 let channelTemp = message.guild.channels.cache.find(channel => channel.name === area.get('channel'));
                 let containersTemp = area.get('containers');
                 if (typeof containersTemp === 'undefined') containersTemp = 'none';
-                return message.reply(`\nArea: ${areaTemp}\nChannel: ${channelTemp}\nContainers: ${containersTemp}`);
+								let signsTemp = area.get('signs');
+                if (typeof signsTemp === 'undefined') signsTemp = 'none';
+                return message.reply(`\nArea: ${areaTemp}\nChannel: ${channelTemp}\nContainers: ${containersTemp}\nSigns: ${signsTemp}`);
             }
         }
         catch (e) {

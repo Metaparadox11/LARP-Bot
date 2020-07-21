@@ -22,7 +22,9 @@ module.exports = {
                     let channelTemp = message.guild.channels.cache.find(channel => channel.name === area[i].get('channel'));
                     let containersTemp = area[i].get('containers');
                     if (typeof containersTemp === 'undefined') containersTemp = 'none';
-                    messageTemp += `\nName: ${nameTemp}\nChannel: ${channelTemp}\nContainers: ${containersTemp}\n`;
+										let signsTemp = area[i].get('signs');
+		                if (typeof signsTemp === 'undefined') signsTemp = 'none';
+                    messageTemp += `\nName: ${nameTemp}\nChannel: ${channelTemp}\nContainers: ${containersTemp}\nSigns: ${signsTemp}\n`;
                 }
 				if (area.length === 0) {
 					messageTemp = 'No areas found.';

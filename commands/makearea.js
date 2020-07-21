@@ -28,12 +28,14 @@ module.exports = {
 
         const channelArg = args[0];
         const containersArg = '';
+				const signsArg = '';
 
         try {
         	const area = await database[1].create({
                 name: nameArg,
                 channel: channelArg,
                 containers: containersArg,
+								signs: signsArg,
 								guild: message.guild.id.toString(),
         	});
         	return message.reply(`Area ${area.name} added.`);

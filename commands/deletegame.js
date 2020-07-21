@@ -30,16 +30,23 @@ module.exports = {
                     	const item = await database[0].destroy({ where: { guild: message.guild.id.toString() } });
                         try {
                         	const area = await database[1].destroy({ where: { guild: message.guild.id.toString() } });
-                            try {
-                            	const inventory = await database[3].destroy({ where: { guild: message.guild.id.toString() } });
+														try {
+									            const inventory = await database[3].destroy({ where: { guild: message.guild.id.toString() } });
 															try {
-	                            	const roles = await database[5].destroy({ where: { guild: message.guild.id.toString() } });
-	                            } catch (error) {
-	                            	return message.reply('There was an error trying to delete roles!');
-	                            }
-                            } catch (error) {
-                            	return message.reply('There was an error trying to delete inventories!');
-                            }
+																const roles = await database[5].findAll({ where: { guild: message.guild.id.toString() } });
+
+																for (let i = 0; i < roles.length; i++) {
+																	let taggedRole = await message.guild.roles.fetch(roles[i].get('id'));
+																	taggedRole.delete();
+																}
+
+																const roles2 = await database[5].destroy({ where: { guild: message.guild.id.toString() } });
+															} catch (e) {
+																return message.reply(`There was an error trying to delete roles! Error: ${e}`);
+															}
+										        } catch (e) {
+										        	return message.reply(`There was an error trying to delete inventories. Error: ${e}`);
+										        }
                         } catch (error) {
                         	return message.reply('There was an error trying to delete areas!');
                         }
