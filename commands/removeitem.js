@@ -1,10 +1,10 @@
 module.exports = {
 	name: 'removeitem',
 	description: 'Remove an item from an inventory.',
-    args: true,
-    usage: '<character name or role> . <itemname>',
-    guildOnly: true,
-    cooldown: 3,
+  args: true,
+  usage: '<character name or role> . <itemname>',
+  guildOnly: true,
+  cooldown: 3,
 	async execute(client, message, args, database) {
 		if (!message.member.roles.cache.some(role => role.name === 'GM') && !message.member.roles.cache.some(role => role.name === 'Head GM')) {
 			return message.reply(`You don't have GM permissions.`);
@@ -52,10 +52,10 @@ module.exports = {
 							}
 					}
 
-				return message.reply(`Something went wrong with assigning an item.`);
+				return message.reply(`Something went wrong with removing an item.`);
 			}
 			catch (e) {
-				return message.reply(`Something went wrong with assigning an item. Error: ${e}`);
+				return message.reply(`Something went wrong with removing an item. Error: ${e}`);
 			}
 		}
 
@@ -72,7 +72,7 @@ module.exports = {
 			 }
 
 			if (!hasDivider1) {
-					 return message.reply('You need to include a divider between the ability name and description.');
+					 return message.reply('You need to include a divider between the character role or name and item name.');
 			 }
 
 			 // Get character name
@@ -84,11 +84,7 @@ module.exports = {
 					 nameArg += args[i];
 			 }
 
-			 //Get item name and number
-
-			 if (typeof args[dividerPos1 + 1] === 'undefined') {
-					 return message.reply('You need to include a number of items.');
-			 }
+			 //Get item name
 
 			 if (typeof args[dividerPos1 + 1] === 'undefined') {
            return message.reply('You need to include an item name.');

@@ -1,10 +1,10 @@
 module.exports = {
 	name: 'listcontainers',
 	description: 'List all containers.',
-    args: false,
-    usage: '',
-    guildOnly: true,
-    cooldown: 3,
+  args: false,
+  usage: '',
+  guildOnly: true,
+  cooldown: 3,
 	async execute(client, message, args, database) {
 
 				if (!message.member.roles.cache.some(role => role.name === 'GM') && !message.member.roles.cache.some(role => role.name === 'Head GM')) {

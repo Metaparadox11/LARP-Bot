@@ -1,6 +1,6 @@
 module.exports = {
-	name: 'deletecontainers',
-	description: 'Deletes all containers from game and from areas.',
+	name: 'deletesigns',
+	description: 'Deletes all signs from game and from areas.',
   args: false,
   usage: '',
   guildOnly: true,
@@ -12,20 +12,20 @@ module.exports = {
 				}
 
 				try {
-            const container = await database[2].destroy({ where: { guild: message.guild.id.toString() } });
-            if (!container) return message.reply('No containers found.');
+            const sign = await database[7].destroy({ where: { guild: message.guild.id.toString() } });
+            if (!sign) return message.reply('No signs found.');
 
             try {
                 const temp = '';
-                const affectedRows = await database[1].update({ containers: temp }, { where: { guild: message.guild.id.toString() } });
+                const affectedRows = await database[1].update({ signs: temp }, { where: { guild: message.guild.id.toString() } });
             } catch (e) {
                 return message.reply(`Something went wrong with updating an area. Error: ${e}`);
             }
 
-            return message.reply(`Deleted all containers.`);
+            return message.reply(`Deleted all signs.`);
         }
         catch (e) {
-        	return message.reply(`Something went wrong deleting containers. Error: ${e}`);
+        	return message.reply(`Something went wrong deleting signs. Error: ${e}`);
         }
 	},
 };
