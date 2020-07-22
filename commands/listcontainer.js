@@ -30,7 +30,9 @@ module.exports = {
                 if (typeof randomTemp === 'undefined') randomTemp = 'false';
                 let areaTemp = container.get('area');
                 if (typeof areaTemp === 'undefined') areaTemp = 'none';
-                return message.reply(`\nName: ${containerTemp}\nItems: ${itemsTemp}\nTime: ${timeTemp}\nRandom: ${randomTemp}\nArea: ${areaTemp}`);
+								let descriptionTemp = container.get('text');
+                if (typeof descriptionTemp === 'undefined') descriptionTemp = 'none';
+                return message.reply(`\nName: ${containerTemp}\nDescription: ${descriptionTemp}\nItems: ${itemsTemp}\nTime: ${timeTemp}\nRandom: ${randomTemp}\nArea: ${areaTemp}`);
             }
         }
         catch (e) {

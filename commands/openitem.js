@@ -2,7 +2,7 @@ module.exports = {
 	name: 'openitem',
 	description: 'Open an item from your inventory.',
   args: true,
-  usage: '<item>',
+  usage: '<item name>',
   guildOnly: true,
   cooldown: 3,
 	async execute(client, message, args, database) {

@@ -17,12 +17,17 @@ module.exports = {
 
             try {
                 const container = await database[2].destroy({ where: { guild: message.guild.id.toString() } });
+								try {
+									const sign = await database[7].destroy({ where: { guild: message.guild.id.toString() } });
+									return message.reply(`Areas deleted. Containers and signs associated with areas deleted.`);
+								} catch (e) {
+									return message.reply(`Something went wrong deleting signs. Error: ${e}`);
+								}
             }
             catch (e) {
             	return message.reply(`Something went wrong deleting containers. Error: ${e}`);
             }
 
-            return message.reply(`Deleted all areas and associated containers.`);
         }
         catch (e) {
         	return message.reply(`Something went wrong deleting areas. Error: ${e}`);

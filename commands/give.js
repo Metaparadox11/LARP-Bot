@@ -2,7 +2,7 @@ module.exports = {
 	name: 'give',
 	description: 'Give an item to a user.',
   args: true,
-  usage: '<user> <item>',
+  usage: '<@user> <item>',
   guildOnly: true,
   cooldown: 3,
 	async execute(client, message, args, database) {

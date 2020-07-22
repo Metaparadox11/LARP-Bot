@@ -27,7 +27,12 @@ module.exports = {
             } else {
                 try {
                     const container = await database[2].destroy({ where: { area: areaTemp, guild: message.guild.id.toString() } });
-										return message.reply(`Area ${areaTemp} deleted. Containers associated with this area deleted.`);
+										try {
+											const sign = await database[7].destroy({ where: { area: areaTemp, guild: message.guild.id.toString() } });
+											return message.reply(`Area ${areaTemp} deleted. Containers and signs associated with this area deleted.`);
+										} catch (e) {
+											return message.reply(`Something went wrong deleting signs. Error: ${e}`);
+										}
                 }
                 catch (e) {
                 	return message.reply(`Something went wrong deleting containers. Error: ${e}`);

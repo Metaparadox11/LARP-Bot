@@ -2,7 +2,7 @@ module.exports = {
 	name: 'pullitem',
 	description: 'Remove an item or items from a container.',
     args: true,
-    usage: '<number> <itemname> . <containername>',
+    usage: '<itemname> . <containername>',
     guildOnly: true,
     cooldown: 3,
 	async execute(client, message, args, database) {
@@ -10,22 +10,13 @@ module.exports = {
 					return message.reply(`You don't have GM permissions.`);
 				}
 
-				const numberArg = parseInt(args[0]);
-				if (typeof numberArg !== 'number') {
-            return message.reply('Number argument must be a number > 0.');
-        }
-
-        if (numberArg <= 0) {
-            return message.reply('Number argument must be a number > 0.');
-        }
-
-        if (typeof args[1] === 'undefined') {
+				if (typeof args[0] === 'undefined') {
             return message.reply('You need to include an item name.');
         }
 
         let hasDivider = false;
         let dividerPos = 0;
-        for (var i = 1; i < args.length; i++) {
+        for (var i = 0; i < args.length; i++) {
             if (args[i] === '.') {
                 hasDivider = true;
                 dividerPos = i;
@@ -65,33 +56,24 @@ module.exports = {
 
                 let items = tempItems.split(/,/);
 
-                let temp = '';
-                let a = 0;
-                let maxA = numberArg - 1;
-                let countDeleted = 0;
-                for (var i = 0; i < items.length; i++) {
-									if (items.length === 1) {
-										temp = '';
-										countDeleted = 1;
-										i = items.length;
-									} else {
-                    if (i !== a && items[i] !== nameArg) {
-                        temp += ',';
-                        temp += items[i];
-                    } else if (i === a && items[i] !== nameArg) {
-                        temp += items[i];
-                    } else if (i === a && items[i] === nameArg) {
-                        if (a < maxA) {
-                            a += 1;
-                            countDeleted += 1;
-                        } else {
-                            temp += items[i];
-                        }
-                    } else if (i !== a && items[i] === nameArg) {
-                        countDeleted += 1;
-                    }
+								let temp = '';
+								let pos = -1;
+								for (let i = 0; i < items.length; i++) {
+										if (items[i] === nameArg) {
+											pos = i;
+											i = items.length;
+										}
+								}
+								if (pos === -1) {
+									return message.reply(`That container don't have item ${nameArg}.`);
+								}
+								items.splice(pos, 1);
+								for (let i = 0; i < items.length; i++) {
+									temp += items[i];
+									if (i !== items.length - 1) {
+										temp += ',';
 									}
-                }
+								}
 
                 try {
                     const affectedRows = await database[2].update({ items: temp }, { where: { name: containerArg, guild: message.guild.id.toString() } });

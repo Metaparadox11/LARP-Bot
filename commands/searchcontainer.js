@@ -2,7 +2,7 @@ module.exports = {
 	name: 'searchcontainer',
 	description: 'Search a container for an item.',
   args: true,
-  usage: '<name>',
+  usage: '<container name>',
   guildOnly: true,
   cooldown: 3,
 	async execute(client, message, args, database) {

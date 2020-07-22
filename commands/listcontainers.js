@@ -19,13 +19,14 @@ module.exports = {
                 let messageTemp = '';
                 for (let i = 0; i < container.length; i++) {
                     let nameTemp = container[i].get('name');
+										let descriptionTemp = container[i].get('text');
 										let itemsTemp = container[i].get('items');
                     let timeTemp = container[i].get('time');
                     if (typeof timeTemp === 'undefined') timeTemp = '0';
                     let randomTemp = container[i].get('random');
                     if (typeof randomTemp === 'undefined') randomTemp = 'false';
                     let areaTemp = container[i].get('area');
-                    messageTemp += `\nName: ${nameTemp}\nItems: ${itemsTemp}\nTime: ${timeTemp}\nRandom: ${randomTemp}\nArea: ${areaTemp}\n`;
+                    messageTemp += `\nName: ${nameTemp}\nDescription: ${descriptionTemp}\nItems: ${itemsTemp}\nTime: ${timeTemp}\nRandom: ${randomTemp}\nArea: ${areaTemp}\n`;
                 }
 				if (container.length === 0) {
 					messageTemp = 'No containers found.';

@@ -31,7 +31,7 @@ module.exports = {
 									}
 							}
 							if (pos === -1) {
-								return message.reply(`You don't have ability ${nameArg}.`);
+								return message.reply(`They don't have ability ${nameArg}.`);
 							}
 							abils.splice(pos, 1);
 							for (let i = 0; i < abils.length; i++) {

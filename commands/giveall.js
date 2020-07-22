@@ -2,7 +2,7 @@ module.exports = {
 	name: 'giveall',
 	description: 'Give all items in your inventory to a user.',
   args: true,
-  usage: '<user>',
+  usage: '<@user>',
   guildOnly: true,
   cooldown: 3,
 	async execute(client, message, args, database) {
