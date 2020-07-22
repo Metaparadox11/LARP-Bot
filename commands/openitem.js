@@ -1,6 +1,6 @@
 module.exports = {
-	name: 'consumeitem',
-	description: 'Consume/use an item from your inventory.',
+	name: 'openitem',
+	description: 'Open an item from your inventory.',
   args: true,
   usage: '<item>',
   guildOnly: true,
@@ -73,23 +73,6 @@ module.exports = {
 								if (pos === -1) {
 									return message.reply(`You don't have item ${itemTemp}.`);
 								}
-								items.splice(pos, 1);
-								for (let i = 0; i < items.length; i++) {
-									temp += items[i];
-									if (i !== items.length - 1) {
-										temp += ',';
-									}
-								}
-
-                try {
-                    const affectedRows = await database[3].update({ items: temp }, { where: { id: you.id.toString(), guild: message.guild.id.toString() } });
-
-                    if (affectedRows === 0) {
-                    	return message.reply(`Something went wrong removing the item from your inventory.`);
-                    }
-                } catch (e) {
-                    return message.reply(`Something went wrong removing the item from your inventory. Error: ${e}`);
-                }
 
 	          }
 	      }
@@ -100,9 +83,9 @@ module.exports = {
         let mainMessage = [];
 
         if (contentsTemp === '') {
-	        mainMessage[0] = await message.reply(`You used ${itemTemp}.`);
+	        mainMessage[0] = await message.reply(`There's nothing in ${itemTemp}.`);
         } else {
-          mainMessage[0] = await message.reply(`You used ${itemTemp}. Contents: ${contentsTemp}`);
+          mainMessage[0] = await message.reply(`You opened ${itemTemp}. Contents: ${contentsTemp}`);
         }
 
         const message2 = await message.channel.send("Delete message? React ✅ to delete.");

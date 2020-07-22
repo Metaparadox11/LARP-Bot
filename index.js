@@ -83,6 +83,7 @@ const Containers = sequelize.define('containers', {
 		defaultValue: false,
 		allowNull: false,
 	},
+	text: Sequelize.STRING,
   area: Sequelize.STRING,
   guild: Sequelize.STRING,
 });

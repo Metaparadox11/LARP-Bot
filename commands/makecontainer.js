@@ -2,7 +2,7 @@ module.exports = {
 	name: 'makecontainer',
 	description: 'Make a container and add it to the database.',
     args: true,
-    usage: '<name> . <area> . <time> <random true/false>',
+    usage: '<name> . <area> . <time> <random true/false> <text>',
     guildOnly: true,
     cooldown: 3,
 	async execute(client, message, args, database) {
@@ -81,6 +81,10 @@ module.exports = {
             return message.reply('You need to include whether searching the container is random.');
         }
 
+				if (typeof args[dividerPos2 + 3] === 'undefined') {
+            return message.reply('You need to include container text.');
+        }
+
         //----------------
 
         const timeArg = parseInt(args[dividerPos2 + 1]);
@@ -97,6 +101,14 @@ module.exports = {
 
         //----------------
 
+				let textArgs = '';
+        for (var i = dividerPos2 + 3; i < args.length; i++) {
+            if (i !== dividerPos1 + 3) {
+                textArgs += ' ';
+            }
+            textArgs += args[i];
+        }
+
 				const itemsArg = '';
 
         try {
@@ -105,6 +117,7 @@ module.exports = {
 								items: itemsArg,
                 time: timeArg,
                 random: randomArg,
+								text: textArgs,
                 area: areaArg,
                 guild: message.guild.id.toString(),
         	});
