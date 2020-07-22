@@ -21,7 +21,7 @@ module.exports = {
                   i = roles.length;
                 }
               }
-              if (roleId === '') return message.reply(`You don't have a role.`);
+              if (roleId === '') return message.reply(`You don't have a character role.`);
             }
         }
         catch (e) {

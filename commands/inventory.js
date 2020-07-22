@@ -22,7 +22,7 @@ module.exports = {
 									i = roles.length;
 								}
 							}
-							if (roleId === '') return message.reply(`You don't have a role.`);
+							if (roleId === '') return message.reply(`You don't have a character role.`);
 						}
 				}
 				catch (e) {
@@ -57,8 +57,8 @@ module.exports = {
 
                 collector.on('collect', async (reaction, reactionCollector) => {
                 	await message1.delete();
-                    await message2.delete();
-                    await message.delete();
+                  await message2.delete();
+                  await message.delete();
                 });
             }
         }

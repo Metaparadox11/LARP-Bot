@@ -19,9 +19,10 @@ module.exports = {
                 for (let i = 0; i < item.length; i++) {
                     let nameTemp = item[i].get('name');
                     let descriptionTemp = item[i].get('description');
+										let contentsTemp = item[i].get('contents');
                     let bulkyTemp = item[i].get('bulky');
                     if (typeof bulkyTemp === 'undefined') bulkyTemp = '0';
-                    messageTemp += `\nName: ${nameTemp}\nBulky: ${bulkyTemp}\nDescription: ${descriptionTemp}\n`;
+                    messageTemp += `\nName: ${nameTemp}\nBulky: ${bulkyTemp}\nDescription: ${descriptionTemp}\nContents: ${contentsTemp}\n`;
                 }
 				if (item.length === 0) {
 					messageTemp = 'No items found.';

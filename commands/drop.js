@@ -62,6 +62,9 @@ module.exports = {
 								i = roles.length;
 							}
 						}
+						if (roleId === '') {
+							return message.reply(`You don't have a character role.`);
+						}
 					}
 			}
 			catch (e) {
@@ -147,7 +150,22 @@ module.exports = {
         return message.reply(`Something went wrong looking up that inventory. Error: ${e}`);
       }
 
-      message.reply(`You dropped ${itemTemp} in ${containerTemp}.`);
+      let mainMessage = await message.reply(`You dropped ${itemTemp} in ${containerTemp}.`);
+
+			const message2 = await message.channel.send("Delete message? React ✅ to delete.");
+			message2.react('✅');
+
+			const filter = (reaction, user) => {
+				return reaction.emoji.name === '✅' && user.id === message.author.id;
+			};
+
+			const collector = message2.createReactionCollector(filter, { time: 100000 });
+
+			collector.on('collect', async (reaction, reactionCollector) => {
+				await message2.delete();
+				await mainMessage.delete();
+				await message.delete();
+			});
 
 	},
 };

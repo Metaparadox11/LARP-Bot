@@ -1,10 +1,10 @@
 module.exports = {
 	name: 'makeitem',
 	description: 'Make an item and add it to the database.',
-    args: true,
-    usage: '<name> . <bulky integer> <description>',
-    guildOnly: true,
-    cooldown: 3,
+  args: true,
+  usage: '<name> . <bulky integer> <description> . <contents (optional)>',
+  guildOnly: true,
+  cooldown: 3,
 	async execute(client, message, args, database) {
 				if (!message.member.roles.cache.some(role => role.name === 'GM') && !message.member.roles.cache.some(role => role.name === 'Head GM')) {
 					return message.reply(`You don't have GM permissions.`);
@@ -39,26 +39,51 @@ module.exports = {
 				const bulkyArg = parseInt(args[dividerPos1 + 1]);
 
 				if (Number.isInteger(bulkyArg) == false) {
-		            return message.reply('You need to include an integer bulkiness argument.');
-		        }
+            return message.reply('You need to include an integer bulkiness argument.');
+        }
 
 				if (typeof args[dividerPos1 + 2] === 'undefined') {
-		            return message.reply('You need to include an item description.');
-		        }
+            return message.reply('You need to include an item description.');
+        }
+
+				let hasDivider2 = false;
+        let dividerPos2 = 0;
+        for (var i = dividerPos1 + 1; i < args.length; i++) {
+            if (args[i] === '.') {
+                hasDivider2 = true;
+                dividerPos2 = i;
+                i = args.length;
+            }
+        }
 
 				let descriptionArgs = '';
-				for (var i = dividerPos1 + 2; i < args.length; i++) {
+				if (!hasDivider2) dividerPos2 = args.length;
+        for (var i = dividerPos1 + 2; i < dividerPos2; i++) {
             if (i !== dividerPos1 + 2) {
                 descriptionArgs += ' ';
             }
             descriptionArgs += args[i];
         }
 
+				//----------------
+
+				let contentsArgs = '';
+        if (hasDivider2) {
+					for (var i = dividerPos2 + 1; i < args.length; i++) {
+	            if (i !== dividerPos2 + 1) {
+	                contentsArgs += ' ';
+	            }
+	            contentsArgs += args[i];
+	        }
+        }
+
+
         try {
         	const item = await database[0].create({
         		name: nameArg,
         		bulky: bulkyArg,
         		description: descriptionArgs,
+						contents: contentsArgs,
 						guild: message.guild.id.toString(),
         	});
         	return message.reply(`Item ${item.name} added.`);

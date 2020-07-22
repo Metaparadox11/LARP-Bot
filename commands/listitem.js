@@ -23,7 +23,9 @@ module.exports = {
                 if (typeof bulkyTemp === 'undefined') bulkyTemp = '0';
                 let descriptionTemp = item.get('description');
                 if (typeof descriptionTemp === 'undefined') descriptionTemp = 'none';
-                return message.reply(`\nName: ${itemTemp}\nBulky: ${bulkyTemp}\nDescription: ${descriptionTemp}`);
+								let contentsTemp = item.get('contents');
+                if (typeof contentsTemp === 'undefined') contentsTemp = 'none';
+                return message.reply(`\nName: ${itemTemp}\nBulky: ${bulkyTemp}\nDescription: ${descriptionTemp}\nContents: ${contentsTemp}`);
             }
         }
         catch (e) {

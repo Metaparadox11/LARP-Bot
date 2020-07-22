@@ -28,6 +28,7 @@ const Items = sequelize.define('items', {
 		allowNull: false,
 	},
 	description: Sequelize.TEXT,
+	contents: Sequelize.TEXT,
   guild: Sequelize.STRING,
 });
 
