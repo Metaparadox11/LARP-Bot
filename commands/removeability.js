@@ -118,7 +118,7 @@ module.exports = {
 			 dividerPos1 = 1;
 			 const taggedUser = message.mentions.roles.first();
 
-			 if (typeof args[dividerPos1] !== '.') {
+			 if (args[dividerPos1] !== '.') {
 					 return message.reply('You need to include a divider between the character role or name and ability name.');
 			 }
 
@@ -130,7 +130,7 @@ module.exports = {
 
 			 let nameArg = '';
 			 for (var i = dividerPos1 + 1; i < args.length; i++) {
-					 if (i !== 1) {
+					 if (i !== dividerPos1 + 1) {
 							 nameArg += ' ';
 					 }
 					 nameArg += args[i];

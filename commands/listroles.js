@@ -18,7 +18,7 @@ module.exports = {
             } else {
                 let messageTemp = '';
                 for (let i = 0; i < role.length; i++) {
-                  messageTemp += `\nName: ${role[i].get('name')}\n`;
+                  messageTemp += `\nName: ${role[i].get('name')}`;
                 }
         				if (role.length === 0) {
         					messageTemp = 'No roles found.';

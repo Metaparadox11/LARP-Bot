@@ -26,14 +26,14 @@ module.exports = {
 		                if (typeof signsTemp === 'undefined') signsTemp = 'none';
                     messageTemp += `\nName: ${nameTemp}\nChannel: ${channelTemp}\nContainers: ${containersTemp}\nSigns: ${signsTemp}\n`;
                 }
-				if (area.length === 0) {
-					messageTemp = 'No areas found.';
-				}
+								if (area.length === 0) {
+									messageTemp = 'No areas found.';
+								}
                 return message.reply(messageTemp);
             }
         }
         catch (e) {
-        	return message.reply(`Something went wrong looking up an area. Error: ${e}`);
+        	return message.reply(`Something went wrong looking up areas. Error: ${e}`);
         }
 	},
 };
