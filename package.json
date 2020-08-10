@@ -4,6 +4,7 @@
   "description": "A Discord bot for playing secrets and powers LARPs",
   "main": "index.js",
   "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
   },
   "author": "Olivia Montoya",
