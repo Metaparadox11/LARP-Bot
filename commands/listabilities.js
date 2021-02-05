@@ -16,17 +16,21 @@ module.exports = {
             if (!ability) {
             	return message.reply('No abilities found.');
             } else {
-                let messageTemp = '';
                 for (let i = 0; i < ability.length; i++) {
                     let nameTemp = ability[i].get('name');
                     let descriptionTemp = ability[i].get('description');
                     let effectTemp = ability[i].get('effect');
-                    messageTemp += `\nName: ${nameTemp}\nDescription: ${descriptionTemp}\nEffect: ${effectTemp}\n`;
+                    let stringTemp = `\nName: ${nameTemp}\nDescription: ${descriptionTemp}\nEffect: ${effectTemp}\n`;
+										if (stringTemp.length > 2000) {
+											stringTemp.truncate(0,1997);
+											stringTemp += '...';
+										}
+                    message.channel.send(stringTemp);
                 }
-								if (ability.length === 0) {
-									messageTemp = 'No abilities found.';
+								if (ability.length < 1) {
+									message.channel.send(`No abilities found.`);
 								}
-                return message.reply(messageTemp);
+                return;
             }
         }
         catch (e) {

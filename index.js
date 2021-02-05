@@ -1,7 +1,8 @@
 const fs = require('fs');
 const Discord = require('discord.js');
 const Sequelize = require('sequelize');
-const { prefix, token } = require('./config.json');
+const { prefix } = require('./config.json');
+require('dotenv').config();
 
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
@@ -20,7 +21,7 @@ const sequelize = new Sequelize('database', 'user', 'password', {
 const Items = sequelize.define('items', {
 	name: {
 		type: Sequelize.STRING,
-		unique: true,
+		primaryKey: true,
 	},
   bulky: {
 		type: Sequelize.INTEGER,
@@ -35,7 +36,7 @@ const Items = sequelize.define('items', {
 const Abilities = sequelize.define('abilities', {
 	name: {
 		type: Sequelize.STRING,
-		unique: true,
+		primaryKey: true,
 	},
 	description: Sequelize.TEXT,
 	effect: Sequelize.TEXT,
@@ -63,7 +64,7 @@ const Inventories = sequelize.define('inventories', {
 const Areas = sequelize.define('areas', {
   name: {
 		type: Sequelize.STRING,
-		unique: true,
+		primaryKey: true,
 	},
   channel: Sequelize.STRING,
 	containers: Sequelize.STRING,
@@ -74,7 +75,7 @@ const Areas = sequelize.define('areas', {
 const Containers = sequelize.define('containers', {
 	name: {
 		type: Sequelize.STRING,
-		unique: true,
+		primaryKey: true,
 	},
 	items: Sequelize.STRING,
 	time: Sequelize.INTEGER,
@@ -103,7 +104,7 @@ const Roles = sequelize.define('roles', {
 const Mems = sequelize.define('mems', {
 	name: {
 		type: Sequelize.STRING,
-		unique: true,
+		primaryKey: true,
 	},
 	trigger: Sequelize.STRING,
 	contents: Sequelize.STRING,
@@ -113,7 +114,7 @@ const Mems = sequelize.define('mems', {
 const Signs = sequelize.define('signs', {
 	name: {
 		type: Sequelize.STRING,
-		unique: true,
+		primaryKey: true,
 	},
 	area: Sequelize.STRING,
 	contents: Sequelize.STRING,
@@ -201,6 +202,8 @@ client.on('message', async message => {
     	console.error(error);
     	message.reply('There was an error trying to execute that command!');
     }
+
+		//await sequelize.sync({ force: true });
 });
 
 client.login(process.env.BOT_TOKEN);

@@ -16,7 +16,6 @@ module.exports = {
             if (!inventory) {
             	return message.reply('No inventories found.');
             } else {
-                let messageTemp = '';
                 for (let i = 0; i < inventory.length; i++) {
                     let idTemp = inventory[i].get('id');
                     let nameTemp = inventory[i].get('name');
@@ -24,14 +23,19 @@ module.exports = {
                     if (typeof itemsTemp === 'undefined') itemsTemp = 'none';
                     let abilitiesTemp = inventory[i].get('abilities');
                     if (typeof abilitiesTemp === 'undefined') abilitiesTemp = 'none';
-										let memsTemp = inventory.get('mems');
+										let memsTemp = inventory[i].get('mems');
 		                if (typeof memsTemp === 'undefined') memsTemp = 'none';
-                    messageTemp += `\nCharacter Name: ${nameTemp}\nItems: ${itemsTemp}\nAbilities: ${abilitiesTemp}\nMemory Packets: ${memsTemp}\n`;
+                    let stringTemp = `\nCharacter Name: ${nameTemp}\nItems: ${itemsTemp}\nAbilities: ${abilitiesTemp}\nMemory Packets: ${memsTemp}\n`;
+										if (stringTemp.length > 2000) {
+											stringTemp.truncate(0,1997);
+											stringTemp += '...';
+										}
+										message.channel.send(stringTemp);
                 }
-				if (inventory.length === 0) {
-					messageTemp = 'No inventories found.';
-				}
-                return message.reply(messageTemp);
+								if (inventory.length < 1) {
+									message.channel.send(`No inventories found.`);
+								}
+                return;
             }
         }
         catch (e) {

@@ -17,7 +17,7 @@ module.exports = {
             let file_path = message.attachments.first().attachment;
 
             var request = require('request');
-            request.get(file_path, function (error, response, body) {
+            request.get(file_path, async function (error, response, body) {
                 if (!error && response.statusCode == 200) {
                     var txt = body;
                     message.reply(`Executing commands.`);
@@ -48,7 +48,7 @@ module.exports = {
                       }
 
                       try {
-                      	command.execute(client, message, args, database);
+                      	await command.execute(client, message, args, database);
                       } catch (error) {
                       	console.error(error);
                       	message.reply('There was an error trying to execute a command!');

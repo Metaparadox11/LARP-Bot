@@ -16,7 +16,6 @@ module.exports = {
             if (!area) {
             	return message.reply('No areas found.');
             } else {
-                let messageTemp = '';
                 for (let i = 0; i < area.length; i++) {
                     let nameTemp = area[i].get('name');
                     let channelTemp = message.guild.channels.cache.find(channel => channel.name === area[i].get('channel'));
@@ -24,12 +23,17 @@ module.exports = {
                     if (typeof containersTemp === 'undefined') containersTemp = 'none';
 										let signsTemp = area[i].get('signs');
 		                if (typeof signsTemp === 'undefined') signsTemp = 'none';
-                    messageTemp += `\nName: ${nameTemp}\nChannel: ${channelTemp}\nContainers: ${containersTemp}\nSigns: ${signsTemp}\n`;
+                    let stringTemp = `\nName: ${nameTemp}\nChannel: ${channelTemp}\nContainers: ${containersTemp}\nSigns: ${signsTemp}\n`;
+										if (stringTemp.length > 2000) {
+											stringTemp.truncate(0,1997);
+											stringTemp += '...';
+										}
+                    message.channel.send(stringTemp);
                 }
-								if (area.length === 0) {
-									messageTemp = 'No areas found.';
+								if (area.length < 1) {
+									message.channel.send(`No areas found.`);
 								}
-                return message.reply(messageTemp);
+                return;
             }
         }
         catch (e) {

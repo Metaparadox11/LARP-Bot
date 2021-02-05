@@ -15,19 +15,23 @@ module.exports = {
             if (!item) {
             	return message.reply('No items found.');
             } else {
-                let messageTemp = '';
                 for (let i = 0; i < item.length; i++) {
                     let nameTemp = item[i].get('name');
                     let descriptionTemp = item[i].get('description');
 										let contentsTemp = item[i].get('contents');
                     let bulkyTemp = item[i].get('bulky');
                     if (typeof bulkyTemp === 'undefined') bulkyTemp = '0';
-                    messageTemp += `\nName: ${nameTemp}\nBulky: ${bulkyTemp}\nDescription: ${descriptionTemp}\nContents: ${contentsTemp}\n`;
+										let stringTemp = `\nName: ${nameTemp}\nBulky: ${bulkyTemp}\nDescription: ${descriptionTemp}\nContents: ${contentsTemp}\n`;
+										if (stringTemp.length > 2000) {
+											stringTemp.truncate(0,1997);
+											stringTemp += '...';
+										}
+                    message.channel.send(stringTemp);
                 }
-				if (item.length === 0) {
-					messageTemp = 'No items found.';
-				}
-                return message.reply(messageTemp);
+								if (item.length < 1) {
+									message.channel.send(`No items found.`);
+								}
+                return;
             }
         }
         catch (e) {

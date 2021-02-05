@@ -16,17 +16,21 @@ module.exports = {
             if (!sign) {
             	return message.reply('No signs found.');
             } else {
-                let messageTemp = '';
                 for (let i = 0; i < sign.length; i++) {
                   let areaTemp = sign[i].get('area');
                   let contentsTemp = sign[i].get('contents');
                   let activeTemp = sign[i].get('active');
-                  messageTemp += `\nName: ${sign[i].get('name')}\nContents: ${contentsTemp}\nActive: ${activeTemp}\nArea: ${areaTemp}\n`;
+                  let stringTemp = `\nName: ${sign[i].get('name')}\nContents: ${contentsTemp}\nActive: ${activeTemp}\nArea: ${areaTemp}\n`;
+									if (stringTemp.length > 2000) {
+										stringTemp.truncate(0,1997);
+										stringTemp += '...';
+									}
+									message.channel.send(stringTemp);
                 }
-        				if (sign.length === 0) {
-        					messageTemp = 'No signs found.';
+        				if (sign.length < 1) {
+        					message.channel.send(`No signs found.`);
         				}
-                return message.reply(messageTemp);
+                return;
             }
         }
         catch (e) {

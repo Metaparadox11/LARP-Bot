@@ -80,7 +80,7 @@ module.exports = {
           } else {
               let itemTempYours = yourInventory.get('items');
               if (typeof itemTempYours === 'undefined') {
-                return message.reply(`You don't have any items to give.`);
+                return message.reply(`You don't have any items to drop.`);
               }
 
 							// Delete items from your inventory
@@ -106,7 +106,7 @@ module.exports = {
 							}
 
               try {
-                  const affectedRows = await database[3].update({ items: temp }, { where: { id: message.author.id.toString(), guild: message.guild.id.toString() } });
+                  const affectedRows = await database[3].update({ items: temp }, { where: { id: taggedUser.id.toString(), guild: message.guild.id.toString() } });
 
                   if (affectedRows === 0) {
                   	return message.reply(`Something went wrong removing the item from your inventory.`);

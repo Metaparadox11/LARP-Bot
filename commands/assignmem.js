@@ -135,6 +135,8 @@ module.exports = {
 		           nameArg += args[i];
 		       }
 
+					 message.channel.send(nameArg);
+
 					 assignMem(idArg, nameArg);
 			 	}
 	},

@@ -16,7 +16,6 @@ module.exports = {
             if (!container) {
             	return message.reply('No containers found.');
             } else {
-                let messageTemp = '';
                 for (let i = 0; i < container.length; i++) {
                     let nameTemp = container[i].get('name');
 										let descriptionTemp = container[i].get('text');
@@ -26,12 +25,17 @@ module.exports = {
                     let randomTemp = container[i].get('random');
                     if (typeof randomTemp === 'undefined') randomTemp = 'false';
                     let areaTemp = container[i].get('area');
-                    messageTemp += `\nName: ${nameTemp}\nDescription: ${descriptionTemp}\nItems: ${itemsTemp}\nTime: ${timeTemp}\nRandom: ${randomTemp}\nArea: ${areaTemp}\n`;
+                    let stringTemp = `\nName: ${nameTemp}\nDescription: ${descriptionTemp}\nItems: ${itemsTemp}\nTime: ${timeTemp}\nRandom: ${randomTemp}\nArea: ${areaTemp}\n`;
+										if (stringTemp.length > 2000) {
+											stringTemp.truncate(0,1997);
+											stringTemp += '...';
+										}
+                    message.channel.send(stringTemp);
                 }
-				if (container.length === 0) {
-					messageTemp = 'No containers found.';
-				}
-                return message.reply(messageTemp);
+								if (container.length < 1) {
+									message.channel.send(`No containers found.`);
+								}
+                return;
             }
         }
         catch (e) {

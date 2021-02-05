@@ -21,12 +21,17 @@ module.exports = {
                     let nameTemp = mems[i].get('name');
                     let triggerTemp = mems[i].get('trigger');
                     let contentsTemp = mems[i].get('contents');
-                    messageTemp += `\nName: ${nameTemp}\nTrigger: ${triggerTemp}\nContents: ${contentsTemp}\n`;
+                    let stringTemp = `\nName: ${nameTemp}\nTrigger: ${triggerTemp}\nContents: ${contentsTemp}\n`;
+										if (stringTemp.length > 2000) {
+											stringTemp.truncate(0,1997);
+											stringTemp += '...';
+										}
+                    message.channel.send(stringTemp);
                 }
-								if (mems.length === 0) {
-									messageTemp = 'No memory packets found.';
+								if (mems.length < 1) {
+									message.channel.send(`No memory packets found.`);
 								}
-                return message.reply(messageTemp);
+                return;
             }
         }
         catch (e) {

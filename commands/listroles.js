@@ -16,14 +16,18 @@ module.exports = {
             if (!role) {
             	return message.reply('No roles found.');
             } else {
-                let messageTemp = '';
                 for (let i = 0; i < role.length; i++) {
-                  messageTemp += `\nName: ${role[i].get('name')}`;
+                  let stringTemp = `\nName: ${role[i].get('name')}`;
+									if (stringTemp.length > 2000) {
+										stringTemp.truncate(0,1997);
+										stringTemp += '...';
+									}
+									message.channel.send(stringTemp);
                 }
-        				if (role.length === 0) {
-        					messageTemp = 'No roles found.';
+        				if (role.length < 1) {
+        					message.channel.send(`No roles found.`);
         				}
-                return message.reply(messageTemp);
+                return;
             }
         }
         catch (e) {

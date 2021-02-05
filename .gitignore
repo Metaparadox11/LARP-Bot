@@ -1,3 +1,4 @@
+.env
 *.sqlite
 database.sqlite
 .DS_Store

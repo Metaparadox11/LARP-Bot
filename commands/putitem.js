@@ -59,23 +59,27 @@ module.exports = {
             	//return message.channel.send(area.get('name'));
                 return message.reply('You must name a valid container.');
             } else {
-
-                let temp = container.get('items');
-                if (typeof temp === 'undefined') temp = '';
-                for (var i = 0; i < numberArg; i++) {
-                    if (temp !== '') {
-                        temp += ','
-                    }
-                    temp += nameArg;
-                }
-								try {
-	                const affectedRows = await database[2].update({ items: temp }, { where: { name: containerArg, guild: message.guild.id.toString() } });
-	                //area.upsert(containers: temp);
-	                if (affectedRows > 0) {
-	                	return message.reply(`${numberArg} of item ${nameArg} assigned to container ${containerArg}.`);
+							const item = await database[0].findOne({ where: { name: nameArg, guild: message.guild.id.toString() } });
+		            if (!item) {
+		            	return message.reply('You must name a valid item.');
+		            } else {
+	                let temp = container.get('items');
+	                if (typeof temp === 'undefined') temp = '';
+	                for (var i = 0; i < numberArg; i++) {
+	                    if (temp !== '') {
+	                        temp += ','
+	                    }
+	                    temp += nameArg;
 	                }
-								} catch (e) {
-									return message.reply(`Something went wrong with assigning an item. Error: ${e}`);
+									try {
+		                const affectedRows = await database[2].update({ items: temp }, { where: { name: containerArg, guild: message.guild.id.toString() } });
+		                //area.upsert(containers: temp);
+		                if (affectedRows > 0) {
+		                	return message.reply(`${numberArg} of item ${nameArg} assigned to container ${containerArg}.`);
+		                }
+									} catch (e) {
+										return message.reply(`Something went wrong with assigning an item. Error: ${e}`);
+									}
 								}
             }
 

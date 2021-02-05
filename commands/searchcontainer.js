@@ -39,6 +39,7 @@ module.exports = {
 				containerTemp += ' ' + args[i];
 			}
 
+			// taggedUser.id.toString() or message.author.id.toString()
 			try {
 				const inventory = await database[3].findOne({ where: { id: taggedUser.id.toString(), guild: message.guild.id.toString() } });
 				if (!inventory) {
@@ -143,7 +144,7 @@ module.exports = {
 
 								// Add item to inventory
 								try {
-									const inventory = await database[3].findOne({ where: { id: message.author.id.toString(), guild: message.guild.id.toString() } });
+									const inventory = await database[3].findOne({ where: { id: taggedUser.id.toString(), guild: message.guild.id.toString() } });
 									let yourItems = inventory.get('items');
 									let temp = '';
 									if (yourItems === '') {
@@ -153,7 +154,7 @@ module.exports = {
 									}
 
 									try {
-										const affectedRows = await database[3].update({ items: temp }, { where: { id: message.author.id.toString(), guild: message.guild.id.toString() } });
+										const affectedRows = await database[3].update({ items: temp }, { where: { id: taggedUser.id.toString(), guild: message.guild.id.toString() } });
 
 										if (affectedRows === 0) {
 											return message.reply(`Something went wrong with updating your inventory.`);
@@ -209,12 +210,17 @@ module.exports = {
 
 								// List items in container
 								let messages = [];
-								mainMessages[mainMessages.length] = await message.reply(`You found items. React ✅ to the item you want to take: \n`);
+
 								let items = itemsTemp.split(/,/);
-								for (let i = 0; i < items.length; i++) {
-									messages[i] = await message.channel.send(`${items[i]}\n`);
-									messages[i].react('✅');
-									collectors[i] = messages[i].createReactionCollector(filter, { time: 100000 });
+								if (items.length > 0) {
+									mainMessages[mainMessages.length] = await message.reply(`You found ${items.length} items. React ✅ to the item you want to take: \n`);
+									for (let i = 0; i < items.length; i++) {
+										messages[i] = await message.channel.send(`${items[i]}\n`);
+										messages[i].react('✅');
+										collectors[i] = messages[i].createReactionCollector(filter, { time: 100000 });
+									}
+								} else {
+									mainMessages[mainMessages.length] = await message.reply(`You found no items.\n`);
 								}
 								messages[items.length] = await message.channel.send(`React here to not take any items.`);
 								messages[items.length].react('✅');
@@ -233,7 +239,7 @@ module.exports = {
 											// Actually move item from container into your inventory
 											// Add item to inventory
 											try {
-												const inventory = await database[3].findOne({ where: { id: message.author.id.toString(), guild: message.guild.id.toString() } });
+												const inventory = await database[3].findOne({ where: { id: taggedUser.id.toString(), guild: message.guild.id.toString() } });
 												let yourItems = inventory.get('items');
 												let temp = '';
 												if (yourItems === '') {
@@ -243,7 +249,7 @@ module.exports = {
 												}
 
 												try {
-													const affectedRows = await database[3].update({ items: temp }, { where: { id: message.author.id.toString(), guild: message.guild.id.toString() } });
+													const affectedRows = await database[3].update({ items: temp }, { where: { id: taggedUser.id.toString(), guild: message.guild.id.toString() } });
 
 													if (affectedRows === 0) {
 														return message.reply(`Something went wrong with updating your inventory.`);
@@ -256,17 +262,14 @@ module.exports = {
 											}
 
 											// Remove item from container
+
 											let temp = '';
-											for (let a = 0; a < items.length; a++) {
-													if (a !== 0) {
-														if (a !== i) {
-															temp += ',' + items[a];
-														}
-													} else {
-														if (a !== i) {
-															temp += items[a];
-														}
-													}
+											items.splice(i, 1);
+											for (let j = 0; j < items.length; j++) {
+												temp += items[j];
+												if (j !== items.length - 1) {
+													temp += ',';
+												}
 											}
 
 											try {
@@ -279,7 +282,7 @@ module.exports = {
 													return message.reply(`Something went wrong removing the item from the container. Error: ${e}`);
 											}
 
-											mainMessages[mainMessages.length] = await message.reply(`You got item ${items[i]}.`);
+											mainMessages[mainMessages.length] = await message.reply(`You got the item!`);
 
 										} else {
 											mainMessages[mainMessages.length] = await message.reply(`You didn't pick an item.`);
@@ -293,8 +296,10 @@ module.exports = {
 										for (let m = 0; m < mainMessages.length; m++) {
 											await mainMessages[m].delete();
 										}
+										await message2.delete();
 										await textMessage.delete();
 										await message.delete();
+										return;
 									});
 								}
 							}
