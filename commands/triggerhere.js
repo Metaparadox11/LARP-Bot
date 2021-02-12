@@ -1,6 +1,6 @@
 module.exports = {
-	name: 'trigger',
-	description: 'Triggers a memory packet\'s content in DMs.',
+	name: 'triggerhere',
+	description: 'Triggers a memory packet\'s content in the same channel.',
   args: true,
   usage: '<mem name>',
   guildOnly: true,
@@ -69,7 +69,7 @@ module.exports = {
 
                       let contentsTemp = mem.get('contents');
                       if (typeof contentsTemp === 'undefined') contentsTemp = 'none';
-                      return message.author.send(`You triggered memory packet: ${memTemp}\nContents: ${contentsTemp}`);
+                      return message.reply(`You triggered memory packet: ${memTemp}\nContents: ${contentsTemp}`);
 
         					}
 
