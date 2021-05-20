@@ -44,8 +44,10 @@ module.exports = {
             newArgs += args[i];
         }
 
+				const Sequelize = require('sequelize');
+				const Op = Sequelize.Op;
         try {
-            const sign = await database[7].findOne({ where: { name: nameArg, guild: message.guild.id.toString() } });
+            const sign = await database[7].findOne({ where: { name: {[Op.like]: nameArg}, guild: message.guild.id.toString() } });
             if (!sign) {
             	return message.reply('You must include a valid current sign.');
             } else {
@@ -72,7 +74,7 @@ module.exports = {
                 }
 
                 try {
-                  const sign2 = await database[7].findOne({ where: { name: newArgs, guild: message.guild.id.toString() } });
+                  const sign2 = await database[7].findOne({ where: { name: {[Op.like]: newArgs}, guild: message.guild.id.toString() } });
                   if (!sign2) {
                   	return message.reply('You must include a valid new sign.');
                   } else {
@@ -98,18 +100,21 @@ module.exports = {
                       return message.reply(`The new sign needs to be inactive to run this command.`);
                     }
 
+										let	sign1Name = sign.get('name');
+										let sign2Name = sign2.get('name');
+
                     // Switch active attributes
                     try {
-                      const affectedRows = await database[7].update({ active: false }, { where: { name: nameArg, guild: message.guild.id.toString() } });
+                      const affectedRows = await database[7].update({ active: false }, { where: { name: sign1Name, guild: message.guild.id.toString() } });
                       try {
-                        const affectedRows2 = await database[7].update({ active: true }, { where: { name: newArgs, guild: message.guild.id.toString() } });
+                        const affectedRows2 = await database[7].update({ active: true }, { where: { name: sign2Name, guild: message.guild.id.toString() } });
 
                         // React filter
             						const filter = (reaction, user) => {
             							return reaction.emoji.name === '✅' && user.id === message.author.id;
             						};
 
-                        let mainMessage = await message.reply(`Sign ${nameArg} changed to ${newArgs}.`);
+                        let mainMessage = await message.reply(`Sign ${sign1Name} changed to ${sign2Name}.`);
 
                         const message2 = await message.channel.send("Delete messages? React ✅ to delete.");
                         message2.react('✅');

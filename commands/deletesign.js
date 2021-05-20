@@ -11,15 +11,18 @@ module.exports = {
 		}
 
 		async function removesign(nameArg) {
+			const Sequelize = require('sequelize');
+			const Op = Sequelize.Op;
       try {
-        const sign = await database[7].findOne({ where: { name: nameArg, guild: message.guild.id.toString() } });
+        const sign = await database[7].findOne({ where: { name: {[Op.like]: nameArg}, guild: message.guild.id.toString() } });
         if (!sign) {
           return message.reply('You must include a valid sign.');
         } else {
+					nameArg = sign.get('name');
         	try {
     				  const area = await database[1].findOne({ where: { name: sign.get('area'), guild: message.guild.id.toString() } });
     					if (!area) {
-    						return message.reply('You must include a valid area.');
+    						return message.reply('Your sign must include a valid area.');
     					} else {
     							let tempsigns = area.get('signs');
 

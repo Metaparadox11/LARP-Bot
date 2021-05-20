@@ -11,14 +11,17 @@ module.exports = {
 					itemTemp += ' ' + args[i];
 				}
 
+				const Sequelize = require('sequelize');
+				const Op = Sequelize.Op;
         let contentsTemp = '';
 				try {
-					const item = await database[0].findOne({ where: { name: itemTemp, guild: message.guild.id.toString() } });
+					const item = await database[0].findOne({ where: { name: {[Op.like]: itemTemp}, guild: message.guild.id.toString() } });
 					if (!item) {
 						return message.reply(`That item doesn't exist.`);
 					} else {
             contentsTemp = item.get('contents');
           }
+					itemTemp = item.get('name');
 				} catch (e) {
 					return message.reply(`Something went wrong looking up that item. Error: ${e}`);
 				}

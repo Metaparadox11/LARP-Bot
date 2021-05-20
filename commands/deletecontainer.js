@@ -18,19 +18,20 @@ module.exports = {
             nameArg += args[i];
         }
 
+				const Sequelize = require('sequelize');
+				const Op = Sequelize.Op;
         try {
-            const container = await database[2].findOne({ where: { name: nameArg, guild: message.guild.id.toString() } });
+            const container = await database[2].findOne({ where: { name: {[Op.like]: nameArg}, guild: message.guild.id.toString() } });
             if (!container) {
             	return message.reply('You must include a valid container name.');
             }
             let tempArea = container.get('area');
-
+						nameArg = container.get('name');
             try {
                 const container2 = await database[2].destroy({ where: { name: nameArg, guild: message.guild.id.toString() } });
                 if (!container2) {
                 	return message.reply('You must include a valid container name.');
                 } else {
-
                     try {
                         const area = await database[1].findOne({ where: { name: tempArea, guild: message.guild.id.toString() } });
 

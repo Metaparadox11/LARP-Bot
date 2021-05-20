@@ -16,11 +16,14 @@ module.exports = {
         name += ' ' + args[i];
       }
 
+			const Sequelize = require('sequelize');
+			const Op = Sequelize.Op;
       try {
-				 const role = await database[5].findOne({ where: { name: name, guild: message.guild.id.toString() } });
+				 const role = await database[5].findOne({ where: { name: {[Op.like]: name}, guild: message.guild.id.toString() } });
 				 if (!role) {
 					 return message.reply(`That role doesn't exist!`);
 				 } else {
+					 name = role.get('name');
 					 let tempId = role.get('id');
 					 let taggedRole = await message.guild.roles.fetch(tempId);
 

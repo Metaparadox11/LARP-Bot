@@ -18,11 +18,14 @@ module.exports = {
             nameArg += args[i];
         }
 
+				const Sequelize = require('sequelize');
+				const Op = Sequelize.Op;
         try {
-            const mem = await database[6].destroy({ where: { name: nameArg, guild: message.guild.id.toString() } });
+            const mem = await database[6].destroy({ where: { name: {[Op.like]: nameArg}, guild: message.guild.id.toString() } });
             if (!mem) {
             	return message.reply('You must include a valid memory packet name.');
             } else {
+								nameArg = mem.get('name');
                 try {
                     const inventory = await database[3].findAll({ where: { guild: message.guild.id.toString() } });
 

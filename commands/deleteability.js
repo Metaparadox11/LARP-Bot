@@ -18,11 +18,14 @@ module.exports = {
             nameArg += args[i];
         }
 
+				const Sequelize = require('sequelize');
+				const Op = Sequelize.Op;
         try {
-            const ability = await database[4].destroy({ where: { name: nameArg, guild: message.guild.id.toString() } });
+            const ability = await database[4].destroy({ where: { name: {[Op.like]: nameArg}, guild: message.guild.id.toString() } });
             if (!ability) {
             	return message.reply('You must include a valid ability name.');
             } else {
+								nameArg = ability.get('name');
                 try {
                     const inventory = await database[3].findAll({ where: { guild: message.guild.id.toString() } });
 

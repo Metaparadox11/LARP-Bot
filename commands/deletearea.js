@@ -18,13 +18,14 @@ module.exports = {
             areaTemp += args[i];
         }
 
-		//return message.reply(`${areaTemp}`);
-
+				const Sequelize = require('sequelize');
+				const Op = Sequelize.Op;
         try {
-            const area = await database[1].destroy({ where: { name: areaTemp, guild: message.guild.id.toString() } });
+            const area = await database[1].destroy({ where: { name: {[Op.like]: areaTemp}, guild: message.guild.id.toString() } });
             if (!area) {
             	return message.reply('You must include a valid area.');
             } else {
+								areaTemp = area.get('name');
                 try {
                     const container = await database[2].destroy({ where: { area: areaTemp, guild: message.guild.id.toString() } });
 										try {
