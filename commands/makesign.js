@@ -121,7 +121,7 @@ module.exports = {
         }
         catch (e) {
         	if (e.name === 'SequelizeUniqueConstraintError') {
-        		return message.reply('A memory packet with that name already exists.');
+        		return message.reply('A sign with that name already exists.');
         	}
         	return message.reply(`Something went wrong with adding a sign. Error: ${e}`);
         }

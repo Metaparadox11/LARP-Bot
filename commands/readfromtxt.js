@@ -10,6 +10,11 @@ module.exports = {
 					return message.reply(`You don't have GM permissions.`);
 				}
 
+				function scrubNewlines(body) {
+					let scrubbedBody = body.replace(/\r\n/g, /\n/g).replace(/\r/g, /\n/g);
+					return scrubbedBody;
+				}
+
         try {
           const fs = require('fs');
 
@@ -19,7 +24,7 @@ module.exports = {
             var request = require('request');
             request.get(file_path, async function (error, response, body) {
                 if (!error && response.statusCode == 200) {
-                    var txt = body;
+                    var txt = scrubNewlines(body);
                     message.reply(`Executing commands.`);
                     const commands = txt.split(/\n+/);
                     for (let i = 0; i < commands.length; i++) {
