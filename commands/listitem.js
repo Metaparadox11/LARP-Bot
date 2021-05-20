@@ -13,9 +13,11 @@ module.exports = {
             }
             itemTemp += args[i];
         }
-
+				
+				const Sequelize = require('sequelize');
+				const Op = Sequelize.Op;
         try {
-            const item = await database[0].findOne({ where: { name: itemTemp, guild: message.guild.id.toString() } });
+            const item = await database[0].findOne({ where: { name: {[Op.like]: itemTemp}, guild: message.guild.id.toString() } });
             if (!item) {
             	return message.reply('You must include a valid item.');
             } else {
@@ -23,18 +25,20 @@ module.exports = {
                 let bulkyTemp = item.get('bulky');
                 if (typeof bulkyTemp === 'undefined') bulkyTemp = '0';
                 let descriptionTemp = item.get('description');
+								let nameTemp = item.get('name');
                 if (typeof descriptionTemp === 'undefined') descriptionTemp = 'none';
 								//let contentsTemp = item.get('contents');
                 //if (typeof contentsTemp === 'undefined') contentsTemp = 'none';
-                return message.reply(`\nName: ${itemTemp}\nBulky: ${bulkyTemp}\nDescription: ${descriptionTemp}`);
+                return message.reply(`\nName: ${nameTemp}\nBulky: ${bulkyTemp}\nDescription: ${descriptionTemp}`);
 							} else {
 								let bulkyTemp = item.get('bulky');
                 if (typeof bulkyTemp === 'undefined') bulkyTemp = '0';
                 let descriptionTemp = item.get('description');
                 if (typeof descriptionTemp === 'undefined') descriptionTemp = 'none';
 								let contentsTemp = item.get('contents');
+								let nameTemp = item.get('name');
                 if (typeof contentsTemp === 'undefined') contentsTemp = 'none';
-                return message.reply(`\nName: ${itemTemp}\nBulky: ${bulkyTemp}\nDescription: ${descriptionTemp}\nContents: ${contentsTemp}`);
+                return message.reply(`\nName: ${nameTemp}\nBulky: ${bulkyTemp}\nDescription: ${descriptionTemp}\nContents: ${contentsTemp}`);
 							}
             }
         }

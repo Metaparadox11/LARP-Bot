@@ -10,49 +10,55 @@ module.exports = {
 			return message.reply(`You don't have GM permissions.`);
 		}
 
-		async function assignItem(idArg, numberArg, nameArg) {
+		async function assignItem(idArg, numberArg, itemNameArg) {
 			//Check item is in database
+			const Sequelize = require('sequelize');
+			const Op = Sequelize.Op;
 			try {
-				const item = await database[0].findOne({ where: { name: nameArg, guild: message.guild.id.toString() } });
+				const item = await database[0].findOne({ where: { name: {[Op.like]: itemNameArg}, guild: message.guild.id.toString() } });
 				if (!item) {
-					return message.reply(`That item doesn't exist.`);
+					return message.reply(`That item doesn't exist. ${itemNameArg}`);
 				}
+
+				try {
+					const inventory = await database[3].findOne({ where: { id: idArg, guild: message.guild.id.toString() } });
+						if (!inventory) {
+								return message.reply('You must include a valid character name or role.');
+						} else {
+								let temp = inventory.get('items');
+								itemNameArg = item.get('name');
+								let empty = false;
+	              if (typeof temp === 'undefined' || temp === '') {
+									temp = '';
+									empty = true;
+								}
+
+	              for (var i = 0; i < numberArg; i++) {
+	                  if (empty && i === 0) {
+	                      temp += itemNameArg;
+												empty = false;
+	                  } else {
+											temp += ',' + itemNameArg;
+										}
+	              }
+
+								const affectedRows = await database[3].update({ items: temp }, { where: { id: idArg, guild: message.guild.id.toString() } });
+
+								if (affectedRows > 0) {
+									return message.reply(`${numberArg} of item ${itemNameArg} assigned to ${inventory.get('name')}'s inventory.`);
+								}
+						}
+
+					return message.reply(`Something went wrong with assigning an item.`);
+				}
+				catch (e) {
+					return message.reply(`Something went wrong with assigning an item. Error: ${e}`);
+				}
+
 			} catch (e) {
 				return message.reply(`Something went wrong with checking an item. Error: ${e}`);
 			}
 
-			try {
-				const inventory = await database[3].findOne({ where: { id: idArg, guild: message.guild.id.toString() } });
-					if (!inventory) {
-							return message.reply('You must include a valid character name or role.');
-					} else {
-							let temp = inventory.get('items');
-							let empty = false;
-              if (typeof temp === 'undefined' || temp === '') {
-								temp = '';
-								empty = true;
-							}
-              for (var i = 0; i < numberArg; i++) {
-                  if (empty && i === 0) {
-                      temp += nameArg;
-											empty = false;
-                  } else {
-										temp += ',' + nameArg;
-									}
-              }
-
-							const affectedRows = await database[3].update({ items: temp }, { where: { id: idArg, guild: message.guild.id.toString() } });
-
-							if (affectedRows > 0) {
-								return message.reply(`${numberArg} of item ${nameArg} assigned to ${inventory.get('name')}'s inventory.`);
-							}
-					}
-
-				return message.reply(`Something went wrong with assigning an item.`);
-			}
-			catch (e) {
-				return message.reply(`Something went wrong with assigning an item. Error: ${e}`);
-			}
 		}
 
 		let dividerPos1 = 0;
@@ -87,7 +93,7 @@ module.exports = {
 			 }
 
 			 const numberArg = parseInt(args[dividerPos1 + 1]);
- 			 if (typeof numberArg !== 'number') {
+ 			 if (isNaN(numberArg)) {
            return message.reply('Number argument must be a number.');
        }
 
@@ -108,8 +114,10 @@ module.exports = {
 			 }
 
 			 //Get role from name
+			 const Sequelize = require('sequelize');
+			 const Op = Sequelize.Op;
 			 try {
-				 const role = await database[5].findOne({ where: { name: nameArg, guild: message.guild.id.toString() } });
+				 const role = await database[5].findOne({ where: { name: {[Op.like]: nameArg}, guild: message.guild.id.toString() } });
 				 if (!role) {
 					 return message.reply(`You need to include a valid character name or tag a character role in order to assign them an item!`);
 				 } else {
@@ -136,7 +144,7 @@ module.exports = {
 			 }
 
 			 const numberArg = parseInt(args[dividerPos1 + 1]);
- 			 if (typeof numberArg !== 'number') {
+ 			 if (isNaN(numberArg)) {
            return message.reply('Number argument must be a number.');
        }
 
@@ -144,15 +152,15 @@ module.exports = {
 					 return message.reply('You need to include an item name.');
 			 }
 
-			 let nameArg = '';
+			 let itemNameArg = '';
 			 for (var i = dividerPos1 + 1; i < args.length; i++) {
 					 if (i !== 1) {
-							 nameArg += ' ';
+							 itemNameArg += ' ';
 					 }
-					 nameArg += args[i];
+					 itemNameArg += args[i];
 			 }
 
-			 assignItem(idArg, numberArg, nameArg);
+			 assignItem(idArg, numberArg, itemNameArg);
 		}
 
 	},

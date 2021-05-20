@@ -12,51 +12,55 @@ module.exports = {
 
 				async function assignMem(idArg, nameArg) {
 					//Check mem is in database
+					const Sequelize = require('sequelize');
+					const Op = Sequelize.Op;
 					try {
-						const mem = await database[6].findOne({ where: { name: nameArg, guild: message.guild.id.toString() } });
+						const mem = await database[6].findOne({ where: { name: {[Op.like]: nameArg}, guild: message.guild.id.toString() } });
 						if (!mem) {
 							return message.reply(`That memory packet doesn't exist.`);
 						}
+
+						try {
+		        	const inventory = await database[3].findOne({ where: { id: idArg, guild: message.guild.id.toString() } });
+		            if (!inventory) {
+		                return message.reply('You must include a valid character name or role.');
+		            } else {
+										let temp = inventory.get('mems');
+										nameArg = mem.get('name');
+										let memz = temp.split(/,/);
+										let memPresent = false;
+										for (let i = 0; i < memz.length; i++) {
+											if (memz[i] === nameArg) {
+												memPresent = true;
+											}
+										}
+
+										if (memPresent) {
+											return message.reply('That character already has that memory packet.');
+										}
+
+		                if (typeof temp === 'undefined') temp = '';
+		                if (temp !== '') {
+		                    temp += ','
+		                }
+		                temp += nameArg;
+		                const affectedRows = await database[3].update({ mems: temp }, { where: { id: idArg, guild: message.guild.id.toString() } });
+
+		                if (affectedRows > 0) {
+		                	return message.reply(`Memory packet ${nameArg} assigned to ${inventory.get('name')}'s inventory.`);
+		                }
+		            }
+
+		        	return message.reply(`Something went wrong with assigning a memory packet.`);
+		        }
+		        catch (e) {
+		        	return message.reply(`Something went wrong with assigning a memory packet. Error: ${e}`);
+		        }
+
 					} catch (e) {
 						return message.reply(`Something went wrong with checking a memory packet. Error: ${e}`);
 					}
 
-					try {
-	        	const inventory = await database[3].findOne({ where: { id: idArg, guild: message.guild.id.toString() } });
-	            if (!inventory) {
-	                return message.reply('You must include a valid character name or role.');
-	            } else {
-									let temp = inventory.get('mems');
-
-									let memz = temp.split(/,/);
-									let memPresent = false;
-									for (let i = 0; i < memz.length; i++) {
-										if (memz[i] === nameArg) {
-											memPresent = true;
-										}
-									}
-
-									if (memPresent) {
-										return message.reply('That character already has that memory packet.');
-									}
-
-	                if (typeof temp === 'undefined') temp = '';
-	                if (temp !== '') {
-	                    temp += ','
-	                }
-	                temp += nameArg;
-	                const affectedRows = await database[3].update({ mems: temp }, { where: { id: idArg, guild: message.guild.id.toString() } });
-
-	                if (affectedRows > 0) {
-	                	return message.reply(`Memory packet ${nameArg} assigned to ${inventory.get('name')}'s inventory.`);
-	                }
-	            }
-
-	        	return message.reply(`Something went wrong with assigning a memory packet.`);
-	        }
-	        catch (e) {
-	        	return message.reply(`Something went wrong with assigning a memory packet. Error: ${e}`);
-	        }
 				}
 
 				let dividerPos1 = 0;
@@ -99,8 +103,10 @@ module.exports = {
 	         }
 
 					 //Get role from name
+					 const Sequelize = require('sequelize');
+		 			 const Op = Sequelize.Op;
 		 			 try {
-		 			 	 const role = await database[5].findOne({ where: { name: nameArg, guild: message.guild.id.toString() } });
+		 			 	 const role = await database[5].findOne({ where: { name: {[Op.like]: nameArg}, guild: message.guild.id.toString() } });
 		 			 	 if (!role) {
 		 			 		 return message.reply(`You need to include a valid character name or tag a character role in order to assign them a memory packet!`);
 		 				 } else {
