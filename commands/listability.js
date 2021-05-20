@@ -19,11 +19,14 @@ module.exports = {
             abilityTemp += args[i];
         }
 
+				const Sequelize = require('sequelize');
+				const Op = Sequelize.Op;
         try {
-            const ability = await database[4].findOne({ where: { name: abilityTemp, guild: message.guild.id.toString() } });
+            const ability = await database[4].findOne({ where: { name: {[Op.like]: abilityTemp}, guild: message.guild.id.toString() } });
             if (!ability) {
             	return message.reply('You must include a valid ability.');
             } else {
+								abilityTemp = ability.get('name');
                 let descriptionTemp = ability.get('description');
                 if (typeof descriptionTemp === 'undefined') descriptionTemp = 'none';
                 let effectTemp = ability.get('effect');

@@ -16,40 +16,58 @@ module.exports = {
 					if (!inventory) {
 						return message.reply('You must include a valid name.');
 					} else {
-							let tempAbils = inventory.get('abilities');
 
-							if (typeof tempAbils === 'undefined') tempAbils = '';
+							// get proper ability name
+							const Sequelize = require('sequelize');
+							const Op = Sequelize.Op;
+			        try {
+			            const ability = await database[4].findOne({ where: { name: {[Op.like]: nameArg}, guild: message.guild.id.toString() } });
+			            if (!ability) {
+			            	return message.reply('You must include a valid ability.');
+			            } else {
+											nameArg = ability.get('name');
 
-							let abils = tempAbils.split(/,/);
+											let tempAbils = inventory.get('abilities');
 
-							let temp = '';
-							let pos = -1;
-							for (let i = 0; i < abils.length; i++) {
-									if (abils[i] === nameArg) {
-										pos = i;
-										i = abils.length;
-									}
-							}
-							if (pos === -1) {
-								return message.reply(`They don't have ability ${nameArg}.`);
-							}
-							abils.splice(pos, 1);
-							for (let i = 0; i < abils.length; i++) {
-								temp += abils[i];
-								if (i !== abils.length - 1) {
-									temp += ',';
-								}
-							}
+											if (typeof tempAbils === 'undefined') tempAbils = '';
 
-							try {
-									const affectedRows = await database[3].update({ abilities: temp }, { where: { id: idArg, guild: message.guild.id.toString() } });
+											let abils = tempAbils.split(/,/);
 
-									if (affectedRows > 0) {
-										return message.reply(`Ability ${nameArg} deleted from ${inventory.get('name')}'s inventory.`);
-									}
-							} catch (e) {
-									return message.reply(`Something went wrong with deleting an ability from an inventory. Error: ${e}`);
-							}
+											let temp = '';
+											let pos = -1;
+											for (let i = 0; i < abils.length; i++) {
+													if (abils[i] === nameArg) {
+														pos = i;
+														i = abils.length;
+													}
+											}
+											if (pos === -1) {
+												return message.reply(`They don't have ability ${nameArg}.`);
+											}
+											abils.splice(pos, 1);
+											for (let i = 0; i < abils.length; i++) {
+												temp += abils[i];
+												if (i !== abils.length - 1) {
+													temp += ',';
+												}
+											}
+
+											try {
+													const affectedRows = await database[3].update({ abilities: temp }, { where: { id: idArg, guild: message.guild.id.toString() } });
+
+													if (affectedRows > 0) {
+														return message.reply(`Ability ${nameArg} deleted from ${inventory.get('name')}'s inventory.`);
+													}
+											} catch (e) {
+													return message.reply(`Something went wrong with deleting an ability from an inventory. Error: ${e}`);
+											}
+
+			            }
+			        }
+			        catch (e) {
+			        	return message.reply(`Something went wrong looking up that ability. Error: ${e}`);
+			        }
+
 					}
 
 				return message.reply(`Something went wrong with deleting an ability from an inventory.`);
@@ -100,8 +118,10 @@ module.exports = {
 			 }
 
 			 //Get role from name
+			 const Sequelize = require('sequelize');
+			 const Op = Sequelize.Op;
 			 try {
-				 const role = await database[5].findOne({ where: { name: nameArg, guild: message.guild.id.toString() } });
+				 const role = await database[5].findOne({ where: { name: {[Op.like]: nameArg}, guild: message.guild.id.toString() } });
 				 if (!role) {
 					 return message.reply(`You need to include a valid character name or tag a character role in order to delete their ability!`);
 				 } else {

@@ -14,42 +14,60 @@ module.exports = {
 			try {
 				const inventory = await database[3].findOne({ where: { id: idArg, guild: message.guild.id.toString() } });
 					if (!inventory) {
-						return message.reply('You must tag a valid username.');
+						return message.reply('You must tag a user with an inventory.');
 					} else {
-							let tempItems = inventory.get('items');
 
-							if (typeof tempItems === 'undefined') tempItems = '';
+							// get item proper name
+							const Sequelize = require('sequelize');
+							const Op = Sequelize.Op;
+			        try {
+			            const item = await database[0].findOne({ where: { name: {[Op.like]: nameArg}, guild: message.guild.id.toString() } });
+			            if (!item) {
+			            	return message.reply('You must include a valid item.');
+			            } else {
+										nameArg = item.get('name');
 
-							let items = tempItems.split(/,/);
+										let tempItems = inventory.get('items');
 
-							let temp = '';
-							let pos = -1;
-							for (let i = 0; i < items.length; i++) {
-									if (items[i] === nameArg) {
-										pos = i;
-										i = items.length;
-									}
-							}
-							if (pos === -1) {
-								return message.reply(`They don't have item ${nameArg}.`);
-							}
-							items.splice(pos, 1);
-							for (let i = 0; i < items.length; i++) {
-								temp += items[i];
-								if (i !== items.length - 1) {
-									temp += ',';
-								}
-							}
+										if (typeof tempItems === 'undefined') tempItems = '';
 
-							try {
-									const affectedRows = await database[3].update({ items: temp }, { where: { id: idArg, guild: message.guild.id.toString() } });
+										let items = tempItems.split(/,/);
 
-									if (affectedRows > 0) {
-										return message.reply(`One of item ${nameArg} deleted from ${inventory.get('name')}'s inventory.`);
-									}
-							} catch (e) {
-									return message.reply(`Something went wrong with deleting an item from an inventory. Error: ${e}`);
-							}
+										let temp = '';
+										let pos = -1;
+										for (let i = 0; i < items.length; i++) {
+												if (items[i] === nameArg) {
+													pos = i;
+													i = items.length;
+												}
+										}
+										if (pos === -1) {
+											return message.reply(`They don't have item ${nameArg}.`);
+										}
+										items.splice(pos, 1);
+										for (let i = 0; i < items.length; i++) {
+											temp += items[i];
+											if (i !== items.length - 1) {
+												temp += ',';
+											}
+										}
+
+										try {
+												const affectedRows = await database[3].update({ items: temp }, { where: { id: idArg, guild: message.guild.id.toString() } });
+
+												if (affectedRows > 0) {
+													return message.reply(`One of item ${nameArg} deleted from ${inventory.get('name')}'s inventory.`);
+												}
+										} catch (e) {
+												return message.reply(`Something went wrong with deleting an item from an inventory. Error: ${e}`);
+										}
+
+			            }
+			        }
+			        catch (e) {
+			        	return message.reply(`Something went wrong looking up that item. Error: ${e}`);
+			        }
+
 					}
 
 				return message.reply(`Something went wrong with removing an item.`);
@@ -99,8 +117,10 @@ module.exports = {
 			 }
 
 			 //Get role from name
+			 const Sequelize = require('sequelize');
+			 const Op = Sequelize.Op;
 			 try {
-				 const role = await database[5].findOne({ where: { name: nameArg, guild: message.guild.id.toString() } });
+				 const role = await database[5].findOne({ where: { name: {[Op.like]: nameArg}, guild: message.guild.id.toString() } });
 				 if (!role) {
 					 return message.reply(`You need to include a valid character name or tag a character role in order to delete their item!`);
 				 } else {

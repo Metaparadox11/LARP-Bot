@@ -38,11 +38,14 @@ module.exports = {
 				containerTemp += ' ' + args[i];
 			}
 
+			const Sequelize = require('sequelize');
+			const Op = Sequelize.Op;
 			try {
-				const item = await database[0].findOne({ where: { name: itemTemp, guild: message.guild.id.toString() } });
+				const item = await database[0].findOne({ where: { name: {[Op.like]: itemTemp}, guild: message.guild.id.toString() } });
 				if (!item) {
 					return message.reply(`That item doesn't exist.`);
 				}
+				itemTemp = item.get('name');
 			} catch (e) {
 				return message.reply(`Something went wrong looking up that item. Error: ${e}`);
 			}
@@ -117,10 +120,11 @@ module.exports = {
 
               // Add item to container
               try {
-                const container = await database[2].findOne({ where: { name: containerTemp, guild: message.guild.id.toString() } });
+                const container = await database[2].findOne({ where: { name: {[Op.like]: containerTemp}, guild: message.guild.id.toString() } });
                 if (!container) {
                   return message.reply(`That container doesn't exist.`);
                 } else {
+									containerTemp = container.get('name');
                   let containerItems = container.get('items');
                   let temp = '';
                   if (containerItems === '') {

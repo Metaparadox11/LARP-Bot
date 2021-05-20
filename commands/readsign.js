@@ -14,11 +14,14 @@ module.exports = {
             signTemp += args[i];
         }
 
+				const Sequelize = require('sequelize');
+				const Op = Sequelize.Op;
         try {
-            const sign = await database[7].findOne({ where: { name: signTemp, guild: message.guild.id.toString() } });
+            const sign = await database[7].findOne({ where: { name: {[Op.like]: signTemp}, guild: message.guild.id.toString() } });
             if (!sign) {
             	return message.reply('You must include a valid sign.');
             } else {
+								signTemp = sign.get('name');
                 //Make sure message is in the right channel
                 let thisChannel = message.channel.name;
     						let signArea = sign.get('area');

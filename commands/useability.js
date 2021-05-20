@@ -57,12 +57,14 @@ module.exports = {
 			idArg = taggedUser.id.toString();
 		}
 
+		const Sequelize = require('sequelize');
+		const Op = Sequelize.Op;
     try {
-        const ability = await database[4].findOne({ where: { name: nameArg, guild: message.guild.id.toString() } });
+        const ability = await database[4].findOne({ where: { name: {[Op.like]: nameArg}, guild: message.guild.id.toString() } });
         if (!ability) {
         	 return message.reply('You must include a valid ability.');
         } else {
-
+						nameArg = ability.get('name');
 						let roleId2 = '';
 						try {
 								const roles = await database[5].findAll({ where: { guild: message.guild.id.toString() } });

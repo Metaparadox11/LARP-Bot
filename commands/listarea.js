@@ -19,11 +19,14 @@ module.exports = {
             areaTemp += args[i];
         }
 
+				const Sequelize = require('sequelize');
+				const Op = Sequelize.Op;
         try {
-            const area = await database[1].findOne({ where: { name: areaTemp, guild: message.guild.id.toString() } });
+            const area = await database[1].findOne({ where: { name: {[Op.like]: areaTemp}, guild: message.guild.id.toString() } });
             if (!area) {
             	return message.reply('You must include a valid area.');
             } else {
+								areaTemp = area.get('name');
                 let channelTemp = message.guild.channels.cache.find(channel => channel.name === area.get('channel'));
                 let containersTemp = area.get('containers');
                 if (typeof containersTemp === 'undefined') containersTemp = 'none';

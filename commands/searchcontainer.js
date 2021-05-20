@@ -49,11 +49,14 @@ module.exports = {
 				return message.reply(`Something went wrong with checking for your inventory. Error: ${e}`);
 			}
 
+			const Sequelize = require('sequelize');
+			const Op = Sequelize.Op;
 			try {
-          const container = await database[2].findOne({ where: { name: containerTemp, guild: message.guild.id.toString() } });
+          const container = await database[2].findOne({ where: { name: {[Op.like]: containerTemp}, guild: message.guild.id.toString() } });
           if (!container) {
             return message.reply(`That container doesn't exist.`);
           } else {
+						containerTemp = container.get('name');
 						// Check if you're in the right channel
 						let thisChannel = message.channel.name;
 						let containerArea = container.get('area');

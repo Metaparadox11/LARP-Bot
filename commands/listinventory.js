@@ -39,11 +39,14 @@ module.exports = {
 				 }
 
 				 //Get role from name
+				 const Sequelize = require('sequelize');
+ 				 const Op = Sequelize.Op;
 				 try {
-						const role = await database[5].findOne({ where: { name: temp, guild: message.guild.id.toString() } });
+						const role = await database[5].findOne({ where: { name: {[Op.like]: temp}, guild: message.guild.id.toString() } });
 						if (!role) {
 							return message.reply(`You need to include a valid character name or tag a character role in order to list their inventory!`);
 						} else {
+							temp = role.get('name');
 							let tempId = role.get('id');
 							let taggedRole = await message.guild.roles.fetch(tempId);
 

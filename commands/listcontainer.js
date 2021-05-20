@@ -18,11 +18,14 @@ module.exports = {
             containerTemp += args[i];
         }
 
+				const Sequelize = require('sequelize');
+				const Op = Sequelize.Op;
         try {
-            const container = await database[2].findOne({ where: { name: containerTemp, guild: message.guild.id.toString() } });
+            const container = await database[2].findOne({ where: { name: {[Op.like]: containerTemp}, guild: message.guild.id.toString() } });
             if (!container) {
             	return message.reply('You must include a valid container.');
             } else {
+								containerTemp = container.get('name');
 								let itemsTemp = container.get('items');
 								let timeTemp = container.get('time');
                 if (typeof timeTemp === 'undefined') timeTemp = '0';

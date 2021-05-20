@@ -38,12 +38,15 @@ module.exports = {
             memTemp += args[i];
         }
 
+				const Sequelize = require('sequelize');
+				const Op = Sequelize.Op;
         try {
-            const mem = await database[6].findOne({ where: { name: memTemp, guild: message.guild.id.toString() } });
+            const mem = await database[6].findOne({ where: { name: {[Op.like]: memTemp}, guild: message.guild.id.toString() } });
             if (!mem) {
             	return message.reply('You must include a valid memory packet.');
             } else {
               //Check you have that memory packet
+							memTemp = mem.get('name');
               try {
         				  const inventory = await database[3].findOne({ where: { id: taggedUser.id.toString(), guild: message.guild.id.toString() } });
         					if (!inventory) {
@@ -64,7 +67,7 @@ module.exports = {
         									}
         							}
         							if (pos === -1) {
-        								return message.reply(`You don't have memory packet ${nameArg}.`);
+        								return message.reply(`You don't have memory packet ${memTemp}.`);
         							}
 
                       let contentsTemp = mem.get('contents');

@@ -16,40 +16,58 @@ module.exports = {
 					if (!inventory) {
 						return message.reply('You must include a valid name.');
 					} else {
-							let tempMems = inventory.get('mems');
 
-							if (typeof tempMems === 'undefined') tempMems = '';
+							// get mem proper name
+							const Sequelize = require('sequelize');
+							const Op = Sequelize.Op;
+			        try {
+			            const mem = await database[6].findOne({ where: { name: {[Op.like]: nameArg}, guild: message.guild.id.toString() } });
+			            if (!mem) {
+			            	return message.reply(`That memory packet doesn't exist.`);
+			            } else {
+											nameArg = mem.get('name');
 
-							let memsToSearch = tempMems.split(/,/);
+											let tempMems = inventory.get('mems');
 
-							let temp = '';
-							let pos = -1;
-							for (let i = 0; i < memsToSearch.length; i++) {
-									if (memsToSearch[i] === nameArg) {
-										pos = i;
-										i = memsToSearch.length;
-									}
-							}
-							if (pos === -1) {
-								return message.reply(`They don't have memory packet ${nameArg}.`);
-							}
-							memsToSearch.splice(pos, 1);
-							for (let i = 0; i < memsToSearch.length; i++) {
-								temp += memsToSearch[i];
-								if (i !== memsToSearch.length - 1) {
-									temp += ',';
-								}
-							}
+											if (typeof tempMems === 'undefined') tempMems = '';
 
-							try {
-									const affectedRows = await database[3].update({ mems: temp }, { where: { id: idArg, guild: message.guild.id.toString() } });
+											let memsToSearch = tempMems.split(/,/);
 
-									if (affectedRows > 0) {
-										return message.reply(`Memory packet ${nameArg} deleted from ${inventory.get('name')}'s inventory.`);
-									}
-							} catch (e) {
-									return message.reply(`Something went wrong with deleting a memory packet from an inventory. Error: ${e}`);
-							}
+											let temp = '';
+											let pos = -1;
+											for (let i = 0; i < memsToSearch.length; i++) {
+													if (memsToSearch[i] === nameArg) {
+														pos = i;
+														i = memsToSearch.length;
+													}
+											}
+											if (pos === -1) {
+												return message.reply(`They don't have memory packet ${nameArg}.`);
+											}
+											memsToSearch.splice(pos, 1);
+											for (let i = 0; i < memsToSearch.length; i++) {
+												temp += memsToSearch[i];
+												if (i !== memsToSearch.length - 1) {
+													temp += ',';
+												}
+											}
+
+											try {
+													const affectedRows = await database[3].update({ mems: temp }, { where: { id: idArg, guild: message.guild.id.toString() } });
+
+													if (affectedRows > 0) {
+														return message.reply(`Memory packet ${nameArg} deleted from ${inventory.get('name')}'s inventory.`);
+													}
+											} catch (e) {
+													return message.reply(`Something went wrong with deleting a memory packet from an inventory. Error: ${e}`);
+											}
+
+			            }
+			        }
+			        catch (e) {
+			        	return message.reply(`Something went wrong looking up that memory packet. Error: ${e}`);
+			        }
+
 					}
 
 				return message.reply(`Something went wrong with deleting a memory packet from an inventory.`);
@@ -100,8 +118,10 @@ module.exports = {
 			 }
 
 			 //Get role from name
+			 const Sequelize = require('sequelize');
+			 const Op = Sequelize.Op;
 			 try {
-				 const role = await database[5].findOne({ where: { name: nameArg, guild: message.guild.id.toString() } });
+				 const role = await database[5].findOne({ where: { name: {[Op.like]: nameArg}, guild: message.guild.id.toString() } });
 				 if (!role) {
 					 return message.reply(`You need to include a valid character name or tag a character role in order to delete their memory packet!`);
 				 } else {

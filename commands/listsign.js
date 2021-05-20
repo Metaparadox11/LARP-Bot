@@ -18,11 +18,14 @@ module.exports = {
             signTemp += args[i];
         }
 
+				const Sequelize = require('sequelize');
+				const Op = Sequelize.Op;
         try {
-            const sign = await database[7].findOne({ where: { name: signTemp, guild: message.guild.id.toString() } });
+            const sign = await database[7].findOne({ where: { name: {[Op.like]: signTemp}, guild: message.guild.id.toString() } });
             if (!sign) {
             	return message.reply('You must include a valid sign.');
             } else {
+								signTemp = sign.get('name');
 								let areaTemp = sign.get('area');
                 let contentsTemp = sign.get('contents');
                 let activeTemp = sign.get('active');

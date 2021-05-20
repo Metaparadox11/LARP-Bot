@@ -19,11 +19,14 @@ module.exports = {
             memTemp += args[i];
         }
 
+				const Sequelize = require('sequelize');
+				const Op = Sequelize.Op;
         try {
-            const mem = await database[6].findOne({ where: { name: memTemp, guild: message.guild.id.toString() } });
+            const mem = await database[6].findOne({ where: { name: {[Op.like]: memTemp}, guild: message.guild.id.toString() } });
             if (!mem) {
             	return message.reply('You must include a valid memory packet.');
             } else {
+								memTemp = mem.get('name');
                 let triggerTemp = mem.get('trigger');
                 if (typeof triggerTemp === 'undefined') triggerTemp = 'none';
                 let contentsTemp = mem.get('contents');
