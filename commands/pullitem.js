@@ -44,46 +44,63 @@ module.exports = {
             containerArg += args[i];
         }
 
+				const Sequelize = require('sequelize');
+				const Op = Sequelize.Op;
         try {
-        	const container = await database[2].findOne({ where: { name: containerArg, guild: message.guild.id.toString() } });
+        	const container = await database[2].findOne({ where: { name: {[Op.like]: containerArg}, guild: message.guild.id.toString() } });
             if (!container) {
             	return message.reply('You must name a valid container.');
             } else {
+								containerArg = container.get('name');
 
-                let tempItems = container.get('items');
+								const Sequelize = require('sequelize');
+								const Op = Sequelize.Op;
+				        try {
+				            const item = await database[0].findOne({ where: { name: {[Op.like]: nameArg}, guild: message.guild.id.toString() } });
+				            if (!item) {
+				            	return message.reply('You must include a valid item.');
+				            } else {
+											nameArg = item.get('name');
 
-                if (typeof tempItems === 'undefined') tempItems = '';
+											let tempItems = container.get('items');
 
-                let items = tempItems.split(/,/);
+			                if (typeof tempItems === 'undefined') tempItems = '';
 
-								let temp = '';
-								let pos = -1;
-								for (let i = 0; i < items.length; i++) {
-										if (items[i] === nameArg) {
-											pos = i;
-											i = items.length;
-										}
-								}
-								if (pos === -1) {
-									return message.reply(`That container don't have item ${nameArg}.`);
-								}
-								items.splice(pos, 1);
-								for (let i = 0; i < items.length; i++) {
-									temp += items[i];
-									if (i !== items.length - 1) {
-										temp += ',';
-									}
-								}
+			                let items = tempItems.split(/,/);
 
-                try {
-                    const affectedRows = await database[2].update({ items: temp }, { where: { name: containerArg, guild: message.guild.id.toString() } });
+											let temp = '';
+											let pos = -1;
+											for (let i = 0; i < items.length; i++) {
+													if (items[i] === nameArg) {
+														pos = i;
+														i = items.length;
+													}
+											}
+											if (pos === -1) {
+												return message.reply(`That container don't have item ${nameArg}.`);
+											}
+											items.splice(pos, 1);
+											for (let i = 0; i < items.length; i++) {
+												temp += items[i];
+												if (i !== items.length - 1) {
+													temp += ',';
+												}
+											}
 
-                    if (affectedRows > 0) {
-                    	return message.reply(`${countDeleted} of item ${nameArg} removed from container ${containerArg}.`);
-                    }
-                } catch (e) {
-                    return message.reply(`Something went wrong with removing an item from a container. Error: ${e}`);
-                }
+			                try {
+			                    const affectedRows = await database[2].update({ items: temp }, { where: { name: containerArg, guild: message.guild.id.toString() } });
+
+			                    if (affectedRows > 0) {
+			                    	return message.reply(`${countDeleted} of item ${nameArg} removed from container ${containerArg}.`);
+			                    }
+			                } catch (e) {
+			                    return message.reply(`Something went wrong with removing an item from a container. Error: ${e}`);
+			                }
+				            }
+				        }
+				        catch (e) {
+				        	return message.reply(`Something went wrong looking up that item. Error: ${e}`);
+				        }
 
             }
 
