@@ -66,11 +66,6 @@ module.exports = {
             areaArg += args[i];
         }
 
-				const areaTemp = await database[1].findOne({ where: { name: areaArg, guild: message.guild.id.toString() } });
-				if (!areaTemp) {
-					return message.reply('You must include a valid area.');
-				}
-
         //----------------
 
         if (typeof args[dividerPos2 + 1] === 'undefined') {
@@ -89,7 +84,7 @@ module.exports = {
 
         const timeArg = parseInt(args[dividerPos2 + 1]);
 
-        if (typeof timeArg !== 'number') {
+        if (isNaN(timeArg)) {
             return message.reply('Time argument must be a number.');
         }
 
@@ -111,46 +106,66 @@ module.exports = {
 
 				const itemsArg = '';
 
+				const Sequelize = require('sequelize');
+				const Op = Sequelize.Op;
         try {
-        	const container = await database[2].create({
-        				name: nameArg,
-								items: itemsArg,
-                time: timeArg,
-                random: randomArg,
-								text: textArgs,
-                area: areaArg,
-                guild: message.guild.id.toString(),
-        	});
+            const container = await database[2].findOne({ where: { name: {[Op.like]: nameArg}, guild: message.guild.id.toString() } });
+            if (!container) {
+            	nameArg = container.get('name');
 
-            // check areaArg to see if it exists in Areas
+							try {
+			            // check areaArg to see if it exists in Areas
+			            const area = await database[1].findOne({ where: { name: {[Op.like]: areaArg}, guild: message.guild.id.toString() } });
+			            if (!area) {
+			                return message.reply('You must include a valid area.');
+			            } else {
+											areaArg = area.get('name');
 
-            const area = await database[1].findOne({ where: { name: areaArg, guild: message.guild.id.toString() } });
-            if (!area) {
-            	//return message.channel.send(area.get('name'));
-                return message.reply('You must include a valid area.');
+											const container = await database[2].create({
+						        				name: nameArg,
+														items: itemsArg,
+						                time: timeArg,
+						                random: randomArg,
+														text: textArgs,
+						                area: areaArg,
+						                guild: message.guild.id.toString(),
+						        	});
+
+			                let temp = area.get('containers');
+			                if (typeof temp === 'undefined') temp = '';
+			                if (temp !== '') {
+			                    temp += ','
+			                }
+			                temp += nameArg;
+			                let temp2 = area.get('name');
+
+											try {
+				                const affectedRows = await database[1].update({ containers: temp }, { where: { name: areaArg, guild: message.guild.id.toString() } });
+
+				                if (affectedRows > 0) {
+				                	return message.reply(`Container created with name ${nameArg} in area ${areaArg}. Area ${areaArg} was edited.`);
+				                } else {
+													return message.reply(`Something went wrong updating an area with the new container. Error: ${e}`);
+												}
+											} catch (e) {
+												return message.reply(`Something went wrong updating an area with the new container. Error: ${e}`);
+											}
+			            }
+
+			        	//return message.reply(`Container created with name ${container.name} in area ${container.area}.`);
+			        }
+			        catch (e) {
+			        	return message.reply(`Something went wrong with adding a container. Error: ${e}`);
+			        }
+
             } else {
-                let temp = area.get('containers');
-                if (typeof temp === 'undefined') temp = '';
-                if (temp !== '') {
-                    temp += ','
-                }
-                temp += nameArg;
-                let temp2 = area.get('name');
-                //return message.reply(`Setting containers of area ${temp2} to ${temp}`);
-                const affectedRows = await database[1].update({ containers: temp }, { where: { name: areaArg, guild: message.guild.id.toString() } });
-                //area.upsert(containers: temp);
-                if (affectedRows > 0) {
-                	return message.reply(`Container created with name ${container.name} in area ${container.area}. Area ${areaArg} was edited.`);
-                }
+							return message.reply('That container already exists.');
             }
-
-        	return message.reply(`Container created with name ${container.name} in area ${container.area}.`);
         }
         catch (e) {
-        	if (e.name === 'SequelizeUniqueConstraintError') {
-        		return message.reply('That container already exists.');
-        	}
-        	return message.reply(`Something went wrong with adding a container. Error: ${e}`);
+        	return message.reply(`Something went wrong looking up that container. Error: ${e}`);
         }
+
+
 	},
 };

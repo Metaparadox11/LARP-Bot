@@ -107,26 +107,36 @@ module.exports = {
 
 				const cooldownArg = parseInt(args[dividerPos3 + 2]);
 
-        if (typeof cooldownArg !== 'number') {
+        if (isNaN(cooldownArg)) {
             return message.reply('Time argument must be a number.');
         }
 
+				const Sequelize = require('sequelize');
+				const Op = Sequelize.Op;
         try {
-        	const ability = await database[4].create({
-        		name: nameArg,
-        		description: descriptionArgs,
-        		effect: effectArgs,
-						limited: limitedArg,
-						cooldown: cooldownArg,
-						guild: message.guild.id.toString(),
-        	});
-        	return message.reply(`Ability ${ability.name} added.`);
+            const ability = await database[4].findOne({ where: { name: {[Op.like]: nameArg}, guild: message.guild.id.toString() } });
+            if (!ability) {
+							try {
+			        	const ability = await database[4].create({
+			        		name: nameArg,
+			        		description: descriptionArgs,
+			        		effect: effectArgs,
+									limited: limitedArg,
+									cooldown: cooldownArg,
+									guild: message.guild.id.toString(),
+			        	});
+			        	return message.reply(`Ability ${ability.name} added.`);
+			        }
+			        catch (e) {
+			        	return message.reply(`Something went wrong with adding an ability. Error: ${e}`);
+			        }
+            } else {
+							return message.reply('That ability already exists.');
+            }
         }
         catch (e) {
-        	if (e.name === 'SequelizeUniqueConstraintError') {
-        		return message.reply('That ability already exists.');
-        	}
-        	return message.reply(`Something went wrong with adding an ability. Error: ${e}`);
+        	return message.reply(`Something went wrong looking up that ability. Error: ${e}`);
         }
+
 	},
 };

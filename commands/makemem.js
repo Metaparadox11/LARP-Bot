@@ -76,20 +76,33 @@ module.exports = {
 
 				//----------------
 
+				const Sequelize = require('sequelize');
+				const Op = Sequelize.Op;
         try {
-        	const mem = await database[6].create({
-        		name: nameArg,
-        		trigger: triggerArgs,
-        		contents: contentsArgs,
-						guild: message.guild.id.toString(),
-        	});
-        	return message.reply(`Memory packet ${mem.name} added.`);
+            const mem = await database[6].findOne({ where: { name: {[Op.like]: nameArg}, guild: message.guild.id.toString() } });
+            if (!mem) {
+            	nameArg = mem.get('name');
+
+							try {
+			        	const mem = await database[6].create({
+			        		name: nameArg,
+			        		trigger: triggerArgs,
+			        		contents: contentsArgs,
+									guild: message.guild.id.toString(),
+			        	});
+			        	return message.reply(`Memory packet ${nameArg} added.`);
+			        }
+			        catch (e) {
+			        	return message.reply(`Something went wrong with adding a mem. Error: ${e}`);
+			        }
+
+            } else {
+							return message.reply('That memory packet already exists.');
+            }
         }
         catch (e) {
-        	if (e.name === 'SequelizeUniqueConstraintError') {
-        		return message.reply('A memory packet with that name already exists.');
-        	}
-        	return message.reply(`Something went wrong with adding a mem. Error: ${e}`);
+        	return message.reply(`Something went wrong looking up that memory packet. Error: ${e}`);
         }
+
 	},
 };

@@ -77,22 +77,35 @@ module.exports = {
 	        }
         }
 
-
+				//check to see item with this name doesn't already exist
+				const Sequelize = require('sequelize');
+				const Op = Sequelize.Op;
         try {
-        	const item = await database[0].create({
-        		name: nameArg,
-        		bulky: bulkyArg,
-        		description: descriptionArgs,
-						contents: contentsArgs,
-						guild: message.guild.id.toString(),
-        	});
-        	return message.reply(`Item ${item.name} added.`);
+            const item = await database[0].findOne({ where: { name: {[Op.like]: nameArg}, guild: message.guild.id.toString() } });
+            if (!item) {
+            	nameArg = item.get('name');
+
+							try {
+			        	const item = await database[0].create({
+			        		name: nameArg,
+			        		bulky: bulkyArg,
+			        		description: descriptionArgs,
+									contents: contentsArgs,
+									guild: message.guild.id.toString(),
+			        	});
+			        	return message.reply(`Item ${nameArg} added.`);
+			        }
+			        catch (e) {
+			        	return message.reply(`Something went wrong with adding an item. Error: ${e}`);
+			        }
+
+            } else {
+							return message.reply('An item with that name already exists.');
+            }
         }
         catch (e) {
-        	if (e.name === 'SequelizeUniqueConstraintError') {
-        		return message.reply('That item already exists.');
-        	}
-        	return message.reply(`Something went wrong with adding an item. Error: ${e}`);
+        	return message.reply(`Something went wrong looking up an item. Error: ${e}`);
         }
+
 	},
 };

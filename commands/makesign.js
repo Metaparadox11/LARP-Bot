@@ -86,44 +86,69 @@ module.exports = {
 
 				//----------------
 
+				// check sign doesn't already exist
+
+				const Sequelize = require('sequelize');
+				const Op = Sequelize.Op;
         try {
-        	const sign = await database[7].create({
-        		name: nameArg,
-        		area: areaArgs,
-        		contents: contentsArgs,
-            active: activeArg,
-						guild: message.guild.id.toString(),
-        	});
+            const sign = await database[7].findOne({ where: { name: {[Op.like]: nameArg}, guild: message.guild.id.toString() } });
+            if (!sign) {
+							nameArg = sign.get('name');
 
-          //Check to see area is a real area
-          try {
-            const area = await database[1].findOne({ where: { name: areaArgs, guild: message.guild.id.toString() } });
-            if (!area) {
-              return message.reply('You must include a valid area.');
+							//Check to see area is a real area
+		          try {
+		            const area = await database[1].findOne({ where: { name: {[Op.like]: areaArgs}, guild: message.guild.id.toString() } });
+		            if (!area) {
+		              return message.reply('You must include a valid area.');
+		            } else {
+									areaArgs = area.get('name');
+
+									try {
+					        	const sign = await database[7].create({
+					        		name: nameArg,
+					        		area: areaArgs,
+					        		contents: contentsArgs,
+					            active: activeArg,
+											guild: message.guild.id.toString(),
+					        	});
+
+										try {
+											let temp = area.get('signs');
+				              if (typeof temp === 'undefined') temp = '';
+				              if (temp !== '') {
+				                  temp += ','
+				              }
+				              temp += nameArg;
+											
+											const affectedRows = await database[1].update({ signs: temp }, { where: { name: areaArgs, guild: message.guild.id.toString() } });
+
+				              if (affectedRows > 0) {
+				                return message.reply(`Sign created with name ${nameArg} in area ${areaArgs}. Area ${areaArgs} was edited.`);
+				              } else {
+												return message.reply(`Something went wrong with updating the area. Error: ${e}`);
+											}
+
+										} catch (e) {
+											return message.reply(`Something went wrong with updating the area. Error: ${e}`);
+										}
+
+					        }
+					        catch (e) {
+					        	return message.reply(`Something went wrong with adding a sign. Error: ${e}`);
+					        }
+
+		            }
+		          } catch (e) {
+		            return message.reply(`Something went wrong looking up the area. Error: ${e}`);
+		          }
+
             } else {
-              let temp = area.get('signs');
-              if (typeof temp === 'undefined') temp = '';
-              if (temp !== '') {
-                  temp += ','
-              }
-              temp += nameArg;
-
-              const affectedRows = await database[1].update({ signs: temp }, { where: { name: areaArgs, guild: message.guild.id.toString() } });
-
-              if (affectedRows > 0) {
-                return message.reply(`Sign created with name ${sign.name} in area ${sign.area}. Area ${areaArgs} was edited.`);
-              }
+							return message.reply('A sign with that name already exists.');
             }
-          } catch (e) {
-            return message.reply(`Something went wrong looking up the area. Error: ${e}`);
-          }
-
         }
         catch (e) {
-        	if (e.name === 'SequelizeUniqueConstraintError') {
-        		return message.reply('A sign with that name already exists.');
-        	}
-        	return message.reply(`Something went wrong with adding a sign. Error: ${e}`);
+        	return message.reply(`Something went wrong looking up that sign. Error: ${e}`);
         }
+
 	},
 };

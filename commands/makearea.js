@@ -30,21 +30,35 @@ module.exports = {
         const containersArg = '';
 				const signsArg = '';
 
+				const Sequelize = require('sequelize');
+				const Op = Sequelize.Op;
         try {
-        	const area = await database[1].create({
-                name: nameArg,
-                channel: channelArg,
-                containers: containersArg,
-								signs: signsArg,
-								guild: message.guild.id.toString(),
-        	});
-        	return message.reply(`Area ${area.name} added.`);
+            const area = await database[1].findOne({ where: { name: {[Op.like]: nameArg}, guild: message.guild.id.toString() } });
+            if (!area) {
+							try {
+			        	const areaNew = await database[1].create({
+			                name: nameArg,
+			                channel: channelArg,
+			                containers: containersArg,
+											signs: signsArg,
+											guild: message.guild.id.toString(),
+			        	});
+								if (!areaNew) {
+									return message.reply(`Something went wrong with adding an area. Error: ${e}`);
+								} else {
+			        		return message.reply(`Area ${nameArg} added.`);
+								}
+			        }
+			        catch (e) {
+			        	return message.reply(`Something went wrong with adding an area. Error: ${e}`);
+			        }
+            } else {
+							return message.reply('That area already exists.');
+            }
         }
         catch (e) {
-        	if (e.name === 'SequelizeUniqueConstraintError') {
-        		return message.reply('That area already exists.');
-        	}
-        	return message.reply(`Something went wrong with adding an area. Error: ${e}`);
+        	return message.reply(`Something went wrong looking up that area. Error: ${e}`);
         }
+
 	},
 };
