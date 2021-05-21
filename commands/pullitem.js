@@ -29,11 +29,15 @@ module.exports = {
         }
 
         let nameArg = '';
-        for (var i = 1; i < dividerPos; i++) {
-            if (i !== 1) {
+        for (var i = 0; i < dividerPos; i++) {
+            if (i !== 0) {
                 nameArg += ' ';
             }
             nameArg += args[i];
+        }
+
+				if (typeof args[dividerPos + 1] === 'undefined') {
+            return message.reply('You need to include a container name.');
         }
 
         let containerArg = '';
@@ -47,20 +51,18 @@ module.exports = {
 				const Sequelize = require('sequelize');
 				const Op = Sequelize.Op;
         try {
-        	const container = await database[2].findOne({ where: { name: {[Op.like]: containerArg}, guild: message.guild.id.toString() } });
-            if (!container) {
-            	return message.reply('You must name a valid container.');
+        	const item = await database[0].findOne({ where: { name: {[Op.like]: nameArg}, guild: message.guild.id.toString() } });
+            if (!item) {
+            	return message.reply('You must name a valid item.');
             } else {
-								containerArg = container.get('name');
+								nameArg = item.get('name');
 
-								const Sequelize = require('sequelize');
-								const Op = Sequelize.Op;
 				        try {
-				            const item = await database[0].findOne({ where: { name: {[Op.like]: nameArg}, guild: message.guild.id.toString() } });
-				            if (!item) {
-				            	return message.reply('You must include a valid item.');
+				            const container = await database[2].findOne({ where: { name: {[Op.like]: containerArg}, guild: message.guild.id.toString() } });
+				            if (!container) {
+				            	return message.reply('You must include a valid container.');
 				            } else {
-											nameArg = item.get('name');
+											containerArg = container.get('name');
 
 											let tempItems = container.get('items');
 
@@ -91,7 +93,7 @@ module.exports = {
 			                    const affectedRows = await database[2].update({ items: temp }, { where: { name: containerArg, guild: message.guild.id.toString() } });
 
 			                    if (affectedRows > 0) {
-			                    	return message.reply(`${countDeleted} of item ${nameArg} removed from container ${containerArg}.`);
+			                    	return message.reply(`One of item ${nameArg} removed from container ${containerArg}.`);
 			                    }
 			                } catch (e) {
 			                    return message.reply(`Something went wrong with removing an item from a container. Error: ${e}`);
@@ -99,7 +101,7 @@ module.exports = {
 				            }
 				        }
 				        catch (e) {
-				        	return message.reply(`Something went wrong looking up that item. Error: ${e}`);
+				        	return message.reply(`Something went wrong looking up that container. Error: ${e}`);
 				        }
 
             }
@@ -107,7 +109,7 @@ module.exports = {
         	return message.reply(`Something went wrong with removing an item from a container.`);
         }
         catch (e) {
-        	return message.reply(`Something went wrong with removing an item from a container. Error: ${e}`);
+        	return message.reply(`Something went wrong with checking for an item. Error: ${e}`);
         }
 	},
 };
