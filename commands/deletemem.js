@@ -25,7 +25,6 @@ module.exports = {
             if (!mem) {
             	return message.reply('You must include a valid memory packet name.');
             } else {
-								nameArg = mem.get('name');
                 try {
                     const inventory = await database[3].findAll({ where: { guild: message.guild.id.toString() } });
 

@@ -93,7 +93,6 @@ module.exports = {
         try {
             const sign = await database[7].findOne({ where: { name: {[Op.like]: nameArg}, guild: message.guild.id.toString() } });
             if (!sign) {
-							nameArg = sign.get('name');
 
 							//Check to see area is a real area
 		          try {
@@ -119,7 +118,7 @@ module.exports = {
 				                  temp += ','
 				              }
 				              temp += nameArg;
-											
+
 											const affectedRows = await database[1].update({ signs: temp }, { where: { name: areaArgs, guild: message.guild.id.toString() } });
 
 				              if (affectedRows > 0) {

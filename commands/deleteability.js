@@ -25,7 +25,6 @@ module.exports = {
             if (!ability) {
             	return message.reply('You must include a valid ability name.');
             } else {
-								nameArg = ability.get('name');
                 try {
                     const inventory = await database[3].findAll({ where: { guild: message.guild.id.toString() } });
 

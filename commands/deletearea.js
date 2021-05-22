@@ -25,7 +25,6 @@ module.exports = {
             if (!area) {
             	return message.reply('You must include a valid area.');
             } else {
-								areaTemp = area.get('name');
                 try {
                     const container = await database[2].destroy({ where: { area: areaTemp, guild: message.guild.id.toString() } });
 										try {

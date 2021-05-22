@@ -83,7 +83,6 @@ module.exports = {
         try {
             const item = await database[0].findOne({ where: { name: {[Op.like]: nameArg}, guild: message.guild.id.toString() } });
             if (!item) {
-            	nameArg = item.get('name');
 
 							try {
 			        	const item = await database[0].create({

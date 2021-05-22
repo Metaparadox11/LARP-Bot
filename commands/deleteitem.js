@@ -25,7 +25,6 @@ module.exports = {
             if (!item) {
             	return message.reply('You must include a valid item name.');
             } else {
-								nameArg = item.get('name');
                 try {
                     const inventory = await database[3].findAll({ where: { guild: message.guild.id.toString() } });
 

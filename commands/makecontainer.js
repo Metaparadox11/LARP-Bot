@@ -111,7 +111,6 @@ module.exports = {
         try {
             const container = await database[2].findOne({ where: { name: {[Op.like]: nameArg}, guild: message.guild.id.toString() } });
             if (!container) {
-            	nameArg = container.get('name');
 
 							try {
 			            // check areaArg to see if it exists in Areas
