@@ -96,7 +96,7 @@ const Roles = sequelize.define('roles', {
 	},
 	name: {
 		type: Sequelize.STRING,
-		unique: true,
+		unique: false,
 	},
   guild: Sequelize.STRING,
 });
@@ -140,6 +140,15 @@ const cooldowns = new Discord.Collection();
 
 client.once('ready', () => {
 	console.log('Ready!');
+	//const queryInterface = sequelize.getQueryInterface();
+	/* queryInterface.changeColumn(
+	  'Roles',
+	  'name',
+	  {
+			type: Sequelize.STRING,
+			unique: false,
+	  }
+	)*/
   Items.sync();
   Areas.sync();
   Containers.sync();
