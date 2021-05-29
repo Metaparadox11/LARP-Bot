@@ -81,7 +81,7 @@ module.exports = {
 								try {
 									let taggedRole = await message.guild.roles.fetch(tempId);
 
-									if (!taggedRole) {
+									if (taggedRole) {
 										let nameArg = temp;
 
 						        const itemsArg = '';
@@ -90,7 +90,7 @@ module.exports = {
 
 						        makeInventory(tempId, itemsArg, abilitiesArg, memsArg, nameArg);
 									} else {
-										return message.reply(`Something went wrong looking up a role! Error: ${e}`);
+										return message.reply(`Something went wrong looking up a role!`);
 									}
 
 								} catch (e) {
