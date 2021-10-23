@@ -11,7 +11,7 @@ module.exports = {
 				}
 
 				function scrubNewlines(body) {
-					let scrubbedBody = body.replace(/\r\n/g, /\n/g).replace(/\r/g, /\n/g);
+					let scrubbedBody = body.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
 					return scrubbedBody;
 				}
 
