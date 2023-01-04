@@ -23,14 +23,17 @@ const Items = sequelize.define('items', {
 		type: Sequelize.STRING,
 		primaryKey: true,
 	},
-  bulky: {
+  	bulky: {
 		type: Sequelize.INTEGER,
 		defaultValue: 0,
 		allowNull: false,
 	},
 	description: Sequelize.TEXT,
 	contents: Sequelize.TEXT,
-  guild: Sequelize.STRING,
+  	guild: {
+		type: Sequelize.STRING,
+		primaryKey: true,
+	}
 });
 
 const Abilities = sequelize.define('abilities', {
@@ -46,7 +49,10 @@ const Abilities = sequelize.define('abilities', {
 		allowNull: false,
 	},
 	cooldown: Sequelize.INTEGER,
-  guild: Sequelize.STRING,
+	guild: {
+		type: Sequelize.STRING,
+		primaryKey: true,
+	}
 });
 
 const Inventories = sequelize.define('inventories', {
@@ -57,19 +63,25 @@ const Inventories = sequelize.define('inventories', {
 	items: Sequelize.STRING,
 	abilities: Sequelize.STRING,
 	mems: Sequelize.STRING,
-  name: Sequelize.TEXT,
-  guild: Sequelize.STRING,
+  	name: Sequelize.TEXT,
+  	guild: {
+		type: Sequelize.STRING,
+		primaryKey: true,
+	}
 });
 
 const Areas = sequelize.define('areas', {
-  name: {
+  	name: {
 		type: Sequelize.STRING,
 		primaryKey: true,
 	},
-  channel: Sequelize.STRING,
+  	channel: Sequelize.STRING,
 	containers: Sequelize.STRING,
 	signs: Sequelize.STRING,
-  guild: Sequelize.STRING,
+	guild: {
+		type: Sequelize.STRING,
+		primaryKey: true,
+	}
 });
 
 const Containers = sequelize.define('containers', {
@@ -85,8 +97,11 @@ const Containers = sequelize.define('containers', {
 		allowNull: false,
 	},
 	text: Sequelize.STRING,
-  area: Sequelize.STRING,
-  guild: Sequelize.STRING,
+  	area: Sequelize.STRING,
+  	guild: {
+		type: Sequelize.STRING,
+		primaryKey: true,
+	}
 });
 
 const Roles = sequelize.define('roles', {
@@ -98,7 +113,10 @@ const Roles = sequelize.define('roles', {
 		type: Sequelize.STRING,
 		unique: false,
 	},
-  guild: Sequelize.STRING,
+	guild: {
+		type: Sequelize.STRING,
+		primaryKey: true,
+	}
 });
 
 const Mems = sequelize.define('mems', {
@@ -108,7 +126,10 @@ const Mems = sequelize.define('mems', {
 	},
 	trigger: Sequelize.STRING,
 	contents: Sequelize.STRING,
-  guild: Sequelize.STRING,
+	guild: {
+		type: Sequelize.STRING,
+		primaryKey: true,
+	}
 });
 
 const Signs = sequelize.define('signs', {
@@ -123,7 +144,10 @@ const Signs = sequelize.define('signs', {
 		defaultValue: false,
 		allowNull: false,
 	},
-  guild: Sequelize.STRING,
+	guild: {
+		type: Sequelize.STRING,
+		primaryKey: true,
+	}
 });
 
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
